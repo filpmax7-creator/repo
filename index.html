@@ -4,18 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abu Al-Hassan Repo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; }
-        h1 { color: #333; }
-        .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+        :root { --primary: #007bff; --bg: #f8f9fa; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; color: #333; }
+        .container { max-width: 500px; margin: auto; }
+        .header { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .header img { width: 80px; border-radius: 20px; margin-bottom: 15px; }
+        .btn-add { display: block; background: var(--primary); color: white; text-decoration: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-top: 15px; transition: 0.3s; }
+        
+        .section-title { text-align: right; font-size: 18px; margin: 20px 5px 10px; font-weight: bold; }
+        .package-card { background: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; text-align: right; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .package-card img { width: 50px; height: 50px; border-radius: 12px; margin-left: 15px; }
+        .package-info { flex-grow: 1; }
+        .package-info h3 { margin: 0; font-size: 16px; }
+        .package-info p { margin: 5px 0 0; font-size: 13px; color: #777; }
+
+        .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .social-links a { width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #333; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 20px; }
     </style>
 </head>
 <body>
-    <div class="card">
+
+<div class="container">
+    <div class="header">
+        <img src="Cydialcon.png" alt="Repo Icon">
         <h1>مستودع أبو الحسن</h1>
-        <p>مرحباً بك في المستودع الخاص بي لأدوات الجيلبريك.</p>
-        <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn">إضافة إلى Sileo</a>
+        <p>أفضل أدوات الجيلبريك بين يديك</p>
+        <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn-add">
+            <i class="fas fa-plus"></i> إضافة إلى Sileo
+        </a>
     </div>
+
+    <div class="section-title">الأدوات المتوفرة</div>
+    <div class="package-card">
+        <img src="icon.png" alt="YTNoAds">
+        <div class="package-info">
+            <h3>YTNoAds</h3>
+            <p>إزالة إعلانات يوتيوب بشكل كامل</p>
+        </div>
+        <i class="fas fa-chevron-left" style="color: #ccc;"></i>
+    </div>
+
+    <div class="section-title">تواصل معي</div>
+    <div class="social-links">
+        <a href="https://x.com/abu_al_hassan" style="color: #1DA1F2;"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.tiktok.com/@abu_al_hassan" style="color: #000;"><i class="fab fa-tiktok"></i></a>
+        <a href="https://github.com/filpmax7-creator" style="color: #333;"><i class="fab fa-github"></i></a>
+    </div>
+</div>
+
 </body>
 </html>
