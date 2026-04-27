@@ -1,0 +1,11 @@
+Package: com.abualhassan.ytnoads
+Name: YTNoAds
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Maintainer: Abu Al-Hassan
+Author: Abu Al-Hassan
+Section: Tweaks
+Description: Complete Ad-Blocker for YouTube.
+Filename: https://raw.githubusercontent.com/filpmax7-creator/repo/main/debs/com.abualhassan.ytnoads.deb
+Size: 5000
+
