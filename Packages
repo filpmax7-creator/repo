@@ -6,8 +6,8 @@ Description: Remove ads from YouTube
 Maintainer: Abu Al-Hassan
 Author: Abu Al-Hassan <https://x.com/abu_al_hassan>
 Section: Tweaks
-SileoDepiction: https://filpmax7-creator.github.io/repo/info.json
-Filename: ./$FILE
+SileoDepiction: https://filpmax7-creator.github.io/repo/view.json
+Filename: ./com.abualhassan.ytnoads_0.0.1-1+debug_iphoneos-arm64.deb
 Size: 3648
 MD5sum: 27b458eee4b747aa88295a6b7cb09a39
 SHA1: 71b3f8eed5b08af9f69138e49847723446d38001
