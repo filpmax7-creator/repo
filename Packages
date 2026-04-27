@@ -9,3 +9,5 @@ Section: Tweaks
 Filename: ./com.abualhassan.ytnoads_0.0.1-1+debug_iphoneos-arm64.deb
 Size: 3664
 MD5sum: 2c078551e5f51679f1556a2fa4124d2a
+SHA1: 217da33cef077b7487866b80ff64596090c42ad8
+SHA256: a2bae290ed3edd03a4b369e310f1d1000854be05c11bb9b7cc10822b3534e9fc
