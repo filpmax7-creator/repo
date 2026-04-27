@@ -14,24 +14,27 @@
             --bg: #121212; --card: #1e1e1e; --text: #f5f5f5; --sub: #aaa; 
             --accent: #0a84ff; --border: #333; --shadow: rgba(0,0,0,0.3);
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.4s; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.4s; direction: rtl; }
         .container { max-width: 500px; margin: auto; }
         .theme-toggle { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-        .theme-toggle i { cursor: pointer; font-size: 22px; color: var(--accent); transition: 0.3s; }
-        .header { background: var(--card); padding: 30px; border-radius: 28px; box-shadow: 0 10px 30px var(--shadow); border: 1px solid var(--border); text-align: center; }
+        .theme-toggle i { cursor: pointer; font-size: 22px; color: var(--accent); }
+        .header { background: var(--card); padding: 30px; border-radius: 28px; box-shadow: 0 10px 30px var(--shadow); border: 1px solid var(--border); text-align: center; margin-bottom: 20px; }
         .header img { width: 90px; height: 90px; border-radius: 22%; margin-bottom: 15px; }
-        
-        /* تحسين مجموعة الأزرار لتستوعب 3 أزرار */
         .btn-group { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
-        .btn { flex: 1; min-width: 100px; color: white; text-decoration: none; padding: 12px 5px; border-radius: 14px; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); }
-
-        .copy-box { background: var(--bg); border: 1px dashed var(--accent); padding: 12px; border-radius: 14px; margin-top: 15px; cursor: pointer; font-size: 13px; font-weight: bold; text-align: center; }
-        .package-card { background: var(--card); padding: 18px; border-radius: 22px; margin-top: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px var(--shadow); }
-        .pkg-top { display: flex; align-items: center; text-align: right; }
+        .btn { flex: 1; min-width: 90px; color: white; text-decoration: none; padding: 12px 5px; border-radius: 14px; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .package-card { background: var(--card); padding: 18px; border-radius: 22px; border: 1px solid var(--border); box-shadow: 0 4px 15px var(--shadow); }
+        .pkg-top { display: flex; align-items: center; }
         .pkg-top img { width: 50px; height: 50px; border-radius: 12px; margin-left: 15px; }
-        .changelog { background: var(--bg); border-radius: 12px; padding: 12px; margin-top: 15px; font-size: 12px; text-align: right; border-right: 4px solid var(--accent); }
-        .social-links { display: flex; justify: center; gap: 20px; margin-top: 30px; justify-content: center; }
+        
+        /* تصميم معرض الصور الجديد */
+        .screenshot-title { margin: 20px 0 10px; font-weight: bold; font-size: 14px; color: var(--sub); display: block; }
+        .screenshot-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .screenshot-container::-webkit-scrollbar { display: none; }
+        .screenshot-container img { width: 140px; border-radius: 15px; border: 2px solid var(--border); transition: 0.3s; cursor: pointer; }
+        .screenshot-container img:hover { transform: scale(1.05); border-color: var(--accent); }
+
+        .changelog { background: var(--bg); border-radius: 12px; padding: 12px; margin-top: 15px; font-size: 12px; border-right: 4px solid var(--accent); }
+        .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
         .social-links a { color: var(--text); font-size: 22px; transition: 0.3s; }
     </style>
 </head>
@@ -46,15 +49,10 @@
         <img src="icon.png" alt="Icon">
         <h1 id="r-name">مستودع أبو الحسن</h1>
         <p id="r-desc" style="color:var(--sub)">أدوات احترافية بلمسة عربية</p>
-        
         <div class="btn-group">
-            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;"><i class="fas fa-plus"></i> Sileo</a>
-            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;"><i class="fas fa-leaf"></i> Zebra</a>
-            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn" style="background:#5e48e8;"><i class="fas fa-box"></i> Cydia</a>
-        </div>
-
-        <div class="copy-box" onclick="copyURL()">
-            <span id="copy-text">نسخ رابط السورس</span>
+            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;">Sileo</a>
+            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;">Zebra</a>
+            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn" style="background:#5e48e8;">Cydia</a>
         </div>
     </div>
 
@@ -66,11 +64,19 @@
                 <p id="p-desc" style="color:var(--sub); font-size:13px">إزالة إعلانات يوتيوب بشكل كامل</p>
             </div>
         </div>
+
+        <span class="screenshot-title" id="s-title">صور الأداة:</span>
+        <div class="screenshot-container">
+            <img src="screen1.png" alt="Screenshot 1" onerror="this.style.display='none'">
+            <img src="screen2.png" alt="Screenshot 2" onerror="this.style.display='none'">
+            <img src="screen3.png" alt="Screenshot 3" onerror="this.style.display='none'">
+        </div>
+
         <div class="changelog">
             <strong id="ch-title">سجل التغييرات:</strong>
             <ul style="margin:8px 0 0; padding-right:18px; color:var(--sub)">
-                <li>دعم كامل لـ Sileo و Zebra و Cydia.</li>
-                <li>تفعيل الوضع الليلي والنهاري يدوياً.</li>
+                <li>دعم كامل لـ iOS 15 & 16 & 17.</li>
+                <li>إضافة صور معاينة للأداة.</li>
             </ul>
         </div>
     </div>
@@ -104,18 +110,11 @@
     const isAr = (navigator.language || navigator.userLanguage).startsWith('ar');
     if (!isAr) {
         document.documentElement.dir = "ltr";
+        document.body.style.direction = "ltr";
         document.getElementById('r-name').innerText = "Abu Al-Hassan Repo";
-        document.getElementById('copy-text').innerText = "Copy URL";
-    }
-
-    function copyURL() {
-        navigator.clipboard.writeText("https://filpmax7-creator.github.io/repo/").then(() => {
-            const span = document.getElementById('copy-text');
-            span.innerText = isAr ? "تم النسخ!" : "Copied!";
-            setTimeout(() => { span.innerText = isAr ? "نسخ رابط السورس" : "Copy URL"; }, 2000);
-        });
+        document.getElementById('s-title').innerText = "Screenshots:";
+        document.getElementById('ch-title').innerText = "Changelog:";
     }
 </script>
-
 </body>
 </html>
