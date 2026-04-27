@@ -1,6 +1,5 @@
 {
-    "headerImage": "https://filpmax7-creator.github.io/repo/CydiaIcon.png",
-    "tintColor": "#00f2ff",
+    "minVersion": "0.1",
     "tabs": [
         {
             "tabname": "Details",
@@ -23,7 +22,9 @@
                     "text": "My X (Twitter)",
                     "action": "https://x.com/abu_al_hassan"
                 }
-            ]
+            ],
+            "class": "DepictionStackView"
         }
-    ]
+    ],
+    "class": "DepictionTabView"
 }
