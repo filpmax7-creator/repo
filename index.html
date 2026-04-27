@@ -20,18 +20,19 @@
         .theme-toggle i { cursor: pointer; font-size: 22px; color: var(--accent); transition: 0.3s; }
         .header { background: var(--card); padding: 30px; border-radius: 28px; box-shadow: 0 10px 30px var(--shadow); border: 1px solid var(--border); text-align: center; }
         .header img { width: 90px; height: 90px; border-radius: 22%; margin-bottom: 15px; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; color: white; text-decoration: none; padding: 12px; border-radius: 14px; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        
+        /* تحسين مجموعة الأزرار لتستوعب 3 أزرار */
+        .btn-group { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .btn { flex: 1; min-width: 100px; color: white; text-decoration: none; padding: 12px 5px; border-radius: 14px; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); }
+
         .copy-box { background: var(--bg); border: 1px dashed var(--accent); padding: 12px; border-radius: 14px; margin-top: 15px; cursor: pointer; font-size: 13px; font-weight: bold; text-align: center; }
         .package-card { background: var(--card); padding: 18px; border-radius: 22px; margin-top: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px var(--shadow); }
         .pkg-top { display: flex; align-items: center; text-align: right; }
         .pkg-top img { width: 50px; height: 50px; border-radius: 12px; margin-left: 15px; }
         .changelog { background: var(--bg); border-radius: 12px; padding: 12px; margin-top: 15px; font-size: 12px; text-align: right; border-right: 4px solid var(--accent); }
-        
-        /* روابط التواصل */
-        .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
-        .social-links a { width: 45px; height: 45px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 5px 15px var(--shadow); font-size: 20px; transition: 0.3s; color: var(--text); border: 1px solid var(--border); }
-        .social-links a:hover { transform: translateY(-5px); color: var(--accent); }
+        .social-links { display: flex; justify: center; gap: 20px; margin-top: 30px; justify-content: center; }
+        .social-links a { color: var(--text); font-size: 22px; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -45,10 +46,13 @@
         <img src="icon.png" alt="Icon">
         <h1 id="r-name">مستودع أبو الحسن</h1>
         <p id="r-desc" style="color:var(--sub)">أدوات احترافية بلمسة عربية</p>
+        
         <div class="btn-group">
-            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;">Sileo</a>
-            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;">Zebra</a>
+            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;"><i class="fas fa-plus"></i> Sileo</a>
+            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;"><i class="fas fa-leaf"></i> Zebra</a>
+            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn" style="background:#5e48e8;"><i class="fas fa-box"></i> Cydia</a>
         </div>
+
         <div class="copy-box" onclick="copyURL()">
             <span id="copy-text">نسخ رابط السورس</span>
         </div>
@@ -65,8 +69,8 @@
         <div class="changelog">
             <strong id="ch-title">سجل التغييرات:</strong>
             <ul style="margin:8px 0 0; padding-right:18px; color:var(--sub)">
-                <li>دعم كامل لـ iOS 15 & 16 & 17.</li>
-                <li>إضافة زر تبديل الوضع الليلي والنهاري.</li>
+                <li>دعم كامل لـ Sileo و Zebra و Cydia.</li>
+                <li>تفعيل الوضع الليلي والنهاري يدوياً.</li>
             </ul>
         </div>
     </div>
