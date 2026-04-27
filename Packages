@@ -1,11 +1,11 @@
-Package: com.filpmax.ytnoads
+Package: com.abualhassan.ytnoads
 Name: YTNoAds
-Version: 1.0
+Version: 0.0.1-1
 Architecture: iphoneos-arm64
 Description: Remove ads from YouTube
 Maintainer: Abu Al-Hassan
 Author: Abu Al-Hassan
 Section: Tweaks
-Filename: ./YTNoAds.deb
-Size: 
-MD5sum: 
+Filename: ./com.abualhassan.ytnoads_0.0.1-1+debug_iphoneos-arm64.deb
+Size: 3664
+MD5sum: 2c078551e5f51679f1556a2fa4124d2a
