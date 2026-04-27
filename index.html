@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,65 +7,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root { --primary: #007bff; --bg: #f8f9fa; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; color: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; color: #333; transition: 0.3s; }
         .container { max-width: 500px; margin: auto; }
         .header { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .header img { width: 100px; height: 100px; border-radius: 22%; margin-bottom: 15px; object-fit: cover; border: 1px solid #eee; }
-        
+        .header img { width: 100px; height: 100px; border-radius: 22%; margin-bottom: 15px; border: 1px solid #eee; }
         .btn-group { display: flex; gap: 8px; justify-content: center; margin-top: 20px; }
-        .btn-mini { flex: 1; color: white; text-decoration: none; padding: 12px 5px; border-radius: 12px; font-weight: bold; font-size: 13px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn-mini:active { transform: scale(0.95); }
-        
-        .section-title { text-align: right; font-size: 18px; margin: 25px 5px 12px; font-weight: bold; color: #555; }
-        .package-card { background: white; padding: 15px; border-radius: 18px; display: flex; align-items: center; text-align: right; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
-        .package-card img { width: 55px; height: 55px; border-radius: 12px; margin-left: 15px; }
-        .package-info { flex-grow: 1; }
-        .package-info h3 { margin: 0; font-size: 16px; color: #222; }
-        .package-info p { margin: 5px 0 0; font-size: 13px; color: #888; line-height: 1.4; }
-        .version-badge { background: #eee; padding: 2px 8px; border-radius: 6px; font-size: 11px; color: #666; margin-right: 5px; vertical-align: middle; }
-
-        .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 30px; padding-bottom: 30px; }
-        .social-links a { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.08); font-size: 22px; transition: 0.3s; }
+        .btn-mini { flex: 1; color: white; text-decoration: none; padding: 12px 5px; border-radius: 12px; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .section-title { text-align: inherit; font-size: 18px; margin: 25px 5px 12px; font-weight: bold; color: #555; }
+        .package-card { background: white; padding: 15px; border-radius: 18px; display: flex; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
+        .package-card img { width: 55px; height: 55px; border-radius: 12px; }
+        .package-info { flex-grow: 1; padding: 0 15px; text-align: inherit; }
+        .package-info h3 { margin: 0; font-size: 16px; }
+        .package-info p { margin: 5px 0 0; font-size: 13px; color: #888; }
+        .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .social-links a { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.08); font-size: 22px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="main-content">
     <div class="header">
-        <img src="icon.png" alt="Repo Icon">
-        <h1>مستودع أبو الحسن</h1>
-        <p>اختر مدير الحزم لإضافة المستودع</p>
-        
+        <img src="icon.png" alt="Icon">
+        <h1 id="repo-name">مستودع أبو الحسن</h1>
+        <p id="repo-desc">اختر مدير الحزم لإضافة المستودع</p>
         <div class="btn-group">
-            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#2fbdff;">
-                <i class="fas fa-plus-circle"></i> Sileo
-            </a>
-            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#f99157;">
-                <i class="fas fa-leaf"></i> Zebra
-            </a>
-            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#7e57c2;">
-                <i class="fas fa-box"></i> Cydia
-            </a>
+            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#2fbdff;"><i class="fas fa-plus-circle"></i> Sileo</a>
+            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#f99157;"><i class="fas fa-leaf"></i> Zebra</a>
+            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn-mini" style="background:#7e57c2;"><i class="fas fa-box"></i> Cydia</a>
         </div>
     </div>
 
-    <div class="section-title">الأدوات المتوفرة</div>
+    <div class="section-title" id="title-packages">الأدوات المتوفرة</div>
     <div class="package-card">
-        <img src="icon.png" alt="YTNoAds">
+        <img src="icon.png">
         <div class="package-info">
-            <h3>YTNoAds <span class="version-badge">1.0.0</span></h3>
-            <p>أداة احترافية لإزالة إعلانات يوتيوب بالكامل</p>
+            <h3>YTNoAds</h3>
+            <p id="pkg-desc">أداة احترافية لإزالة إعلانات يوتيوب بالكامل</p>
         </div>
-        <i class="fas fa-chevron-left" style="color: #ddd; font-size: 12px;"></i>
     </div>
 
-    <div class="section-title">تواصل معي</div>
+    <div class="section-title" id="title-social">تواصل معي</div>
     <div class="social-links">
         <a href="https://x.com/abu_al_hassan" style="color: #000;"><i class="fab fa-x-twitter"></i></a>
         <a href="https://www.tiktok.com/@abu_al_hassan" style="color: #ff0050;"><i class="fab fa-tiktok"></i></a>
         <a href="https://github.com/filpmax7-creator" style="color: #333;"><i class="fab fa-github"></i></a>
     </div>
 </div>
+
+<script>
+    const userLang = navigator.language || navigator.userLanguage;
+    if (!userLang.startsWith('ar')) {
+        // التحويل للإنجليزية إذا لم تكن اللغة عربية
+        document.documentElement.lang = "en";
+        document.documentElement.dir = "ltr";
+        document.getElementById('repo-name').innerText = "Abu Al-Hassan Repo";
+        document.getElementById('repo-desc').innerText = "Choose your package manager to add the repo";
+        document.getElementById('title-packages').innerText = "Available Packages";
+        document.getElementById('pkg-desc').innerText = "Professional tool to remove all YouTube ads";
+        document.getElementById('title-social').innerText = "Connect with me";
+    } else {
+        document.documentElement.dir = "rtl";
+    }
+</script>
 
 </body>
 </html>
