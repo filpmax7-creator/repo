@@ -1,0 +1,29 @@
+{
+    "headerImage": "https://filpmax7-creator.github.io/repo/CydiaIcon.png",
+    "tintColor": "#00f2ff",
+    "tabs": [
+        {
+            "tabname": "Details",
+            "views": [
+                {
+                    "class": "DepictionHeaderView",
+                    "title": "YTNoAds"
+                },
+                {
+                    "class": "DepictionSubheaderView",
+                    "title": "Developed by Abu Al-Hassan"
+                },
+                {
+                    "class": "DepictionButtonView",
+                    "text": "My TikTok",
+                    "action": "https://www.tiktok.com/@abu_al_hassan"
+                },
+                {
+                    "class": "DepictionButtonView",
+                    "text": "My X (Twitter)",
+                    "action": "https://x.com/abu_al_hassan"
+                }
+            ]
+        }
+    ]
+}
