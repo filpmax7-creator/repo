@@ -1,8 +1,9 @@
-Origin: Abu Al-Hassan
+Origin: Abu Al-Hassan Repo
 Label: Abu Al-Hassan
 Suite: stable
 Version: 1.0
 Codename: ios
 Architectures: iphoneos-arm64
 Components: main
-Description: My Personal Tweak Repo
+Description: My Personal Tweak Repository for iOS Apps.
+Support: https://x.com/your_username
