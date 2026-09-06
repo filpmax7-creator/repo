@@ -30,3 +30,20 @@ Author: Abu Al-Hassan <https://x.com/abu_al_hassan>
 Depiction: https://x.com/abu_al_hassan
 Name: YTNoAds
 
+Package: local.floatsnap.tweak
+Version: 0.9.2-alpha-1+debug
+Architecture: iphoneos-arm64
+Maintainer: Filp Max <filpmax7@gmail.com>
+Installed-Size: 1368
+Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0), firmware (<< 27.0)
+Filename: ./local.floatsnap.tweak_0.9.2-alpha-1+debug_iphoneos-arm64.deb
+Size: 339910
+MD5sum: e6a4d085879f22d07c5f7678a6b5ee1e
+SHA1: 005b9bf3f7a603889df3eddef3520dff0e569cd5
+SHA256: d641ec2add591a0d2a25fcfbbd854c112e720b1023fb04ac2520c2df1abbb6ac
+Section: Tweaks
+Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
+Author: Filp Max
+Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
+Name: FloatSnap
+
