@@ -30,20 +30,20 @@ Author: Abu Al-Hassan <https://x.com/abu_al_hassan>
 Depiction: https://x.com/abu_al_hassan
 Name: YTNoAds
 
-Package: local.floatsnap.tweak
-Version: 0.9.2-alpha-1+debug
+Package: com.bioprotect.callrecorderpro
+Version: 5.23.1-translation-bridge-buildfix
 Architecture: iphoneos-arm64
-Maintainer: Filp Max <filpmax7@gmail.com>
-Installed-Size: 1368
-Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0), firmware (<< 27.0)
-Filename: ./local.floatsnap.tweak_0.9.2-alpha-1+debug_iphoneos-arm64.deb
-Size: 339910
-MD5sum: e6a4d085879f22d07c5f7678a6b5ee1e
-SHA1: 005b9bf3f7a603889df3eddef3520dff0e569cd5
-SHA256: d641ec2add591a0d2a25fcfbbd854c112e720b1023fb04ac2520c2df1abbb6ac
-Section: Tweaks
-Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
-Author: Filp Max
-Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
-Name: FloatSnap
+Maintainer: BioProtect Team
+Installed-Size: 4468
+Depends: ellekit (>= 1.0), preferenceloader (>= 2.2.4), com.opa334.libsandy (>= 1.1), firmware (>= 16.0)
+Filename: ./com.bioprotect.callrecorderpro_5.23.1-translation-bridge-buildfix_iphoneos-arm64.deb
+Size: 2015540
+MD5sum: 3a3247ab3f29be81df3e99fdec7be775
+SHA1: 20dfe1fe781e5fb6c92b2497768e80ed66a84096
+SHA256: dc4f4a7c14b4b21df1c9edb32eab9f25544d020a6e3e8337d53a0468a787e828
+Section: Utilities
+Priority: optional
+Description: Rootless call recorder with multi-app recording indicator, consent notice, unified metadata, 16 kHz mixed AAC/M4A output, optional English-to-Arabic live translation bridge, direct finalization watchdog, and Phone call-history integration.
+Author: BioProtect Team
+Name: CallRecorder Pro
 
