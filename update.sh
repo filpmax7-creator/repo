@@ -3,6 +3,10 @@
 # ضبط مسارات بيئة الجلبريك Rootless
 export PATH="/var/jb/usr/bin:/var/jb/bin:/var/jb/usr/local/bin:$PATH"
 
+# زيادة ذاكرة التخزين المؤقت للرفع لتفادي خطأ HTTP 400 مع الملفات الكبيرة
+git config http.postBuffer 524288000
+git config http.maxRequestBuffer 100M
+
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
