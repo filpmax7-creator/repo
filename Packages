@@ -30,20 +30,3 @@ Author: Abu Al-Hassan <https://x.com/abu_al_hassan>
 Depiction: https://x.com/abu_al_hassan
 Name: YTNoAds
 
-Package: com.bioprotect.callrecorderpro
-Version: 5.23.1-translation-bridge-buildfix
-Architecture: iphoneos-arm64
-Maintainer: BioProtect Team
-Installed-Size: 4468
-Depends: ellekit (>= 1.0), preferenceloader (>= 2.2.4), com.opa334.libsandy (>= 1.1), firmware (>= 16.0)
-Filename: ./com.bioprotect.callrecorderpro_5.23.1-translation-bridge-buildfix_iphoneos-arm64.deb
-Size: 2015540
-MD5sum: 3a3247ab3f29be81df3e99fdec7be775
-SHA1: 20dfe1fe781e5fb6c92b2497768e80ed66a84096
-SHA256: dc4f4a7c14b4b21df1c9edb32eab9f25544d020a6e3e8337d53a0468a787e828
-Section: Utilities
-Priority: optional
-Description: Rootless call recorder with multi-app recording indicator, consent notice, unified metadata, 16 kHz mixed AAC/M4A output, optional English-to-Arabic live translation bridge, direct finalization watchdog, and Phone call-history integration.
-Author: BioProtect Team
-Name: CallRecorder Pro
-
