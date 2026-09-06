@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
             --bg: #121212; --card: #1e1e1e; --text: #f5f5f5; --sub: #aaa; 
             --accent: #0a84ff; --border: #333; --shadow: rgba(0,0,0,0.3);
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.4s; direction: rtl; text-align: right; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.4s; direction: ltr; text-align: left; }
         .container { max-width: 500px; margin: auto; }
         
         .theme-toggle { display: flex; justify-content: flex-end; margin-bottom: 10px; }
@@ -28,9 +28,9 @@
 
         .package-card { background: var(--card); padding: 18px; border-radius: 22px; border: 1px solid var(--border); box-shadow: 0 4px 15px var(--shadow); }
         .pkg-top { display: flex; align-items: center; margin-bottom: 15px; }
-        .pkg-top img { width: 55px; height: 55px; border-radius: 14px; margin-left: 15px; }
+        .pkg-top img { width: 55px; height: 55px; border-radius: 14px; margin-right: 15px; }
 
-        /* معرض الصور (Screenshots) */
+        /* Screenshots Section */
         .screenshot-section { margin-top: 20px; }
         .screenshot-title { font-size: 14px; font-weight: bold; color: var(--sub); margin-bottom: 10px; display: block; }
         .screenshot-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; -ms-overflow-style: none; }
@@ -38,7 +38,7 @@
         .screenshot-scroll img { width: 160px; border-radius: 18px; border: 2px solid var(--border); box-shadow: 0 5px 15px var(--shadow); transition: 0.3s; cursor: pointer; }
         .screenshot-scroll img:hover { transform: scale(1.03); border-color: var(--accent); }
 
-        .changelog { background: var(--bg); border-radius: 15px; padding: 15px; margin-top: 20px; font-size: 13px; border-right: 4px solid var(--accent); }
+        .changelog { background: var(--bg); border-radius: 15px; padding: 15px; margin-top: 20px; font-size: 13px; border-left: 4px solid var(--accent); }
         .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 35px; }
         .social-links a { color: var(--text); font-size: 24px; transition: 0.3s; }
         .social-links a:hover { color: var(--accent); transform: translateY(-3px); }
@@ -54,7 +54,7 @@
     <div class="header">
         <img src="icon.png" alt="Icon">
         <h1 id="repo-name">filp max</h1>
-        <p style="color:var(--sub)"> Tools developer</p>
+        <p style="color:var(--sub)">Tools Developer</p>
         <div class="btn-group">
             <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;"><i class="fas fa-plus"></i> Sileo</a>
             <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;"><i class="fas fa-leaf"></i> Zebra</a>
@@ -67,12 +67,12 @@
             <img src="icon.png" alt="YTNoAds">
             <div style="flex-grow:1">
                 <h3 style="margin:0;">YTNoAds <span style="font-size:10px; background:var(--accent); color:white; padding:2px 8px; border-radius:20px; vertical-align: middle;">1.0.0</span></h3>
-                <p style="color:var(--sub); font-size:13px; margin: 5px 0 0;">إزالة إعلانات يوتيوب بشكل كامل</p>
+                <p style="color:var(--sub); font-size:13px; margin: 5px 0 0;">Completely remove all advertisements from YouTube.</p>
             </div>
         </div>
 
         <div class="screenshot-section">
-            <span class="screenshot-title" id="shots-text">صور الأداة:</span>
+            <span class="screenshot-title" id="shots-text">Screenshots:</span>
             <div class="screenshot-scroll">
                 <img src="screen1.png" alt="Screen 1" onerror="this.style.display='none'">
                 <img src="screen2.png" alt="Screen 2" onerror="this.style.display='none'">
@@ -80,19 +80,19 @@
         </div>
 
         <div class="changelog">
-            <strong id="change-text">سجل التغييرات:</strong>
-            <ul style="margin:10px 0 0; padding-right:18px; color:var(--sub); line-height: 1.6;">
-                <li>دعم كامل لـ iOS 15 & 16 & 17.</li>
-                <li>إضافة صور وصفية للأداة داخل السورس.</li>
-                <li>تحسين مظهر الوضع الليلي.</li>
+            <strong id="change-text">Changelog:</strong>
+            <ul style="margin:10px 0 0; padding-left:18px; color:var(--sub); line-height: 1.6;">
+                <li>Full support for iOS 15, 16 & 17.</li>
+                <li>Added preview screenshots inside the repository.</li>
+                <li>Improved Dark Mode visuals and styling.</li>
             </ul>
         </div>
     </div>
 
     <div class="social-links">
-        <a href="https://x.com/abu_al_hassan"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://www.tiktok.com/@abu_al_hassan"><i class="fab fa-tiktok"></i></a>
-        <a href="https://github.com/filpmax7-creator"><i class="fab fa-github"></i></a>
+        <a href="https://x.com/filpmax7?s=11" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="mailto:filpmax7@gmail.com"><i class="fas fa-envelope"></i></a>
+        <a href="https://github.com/filpmax7-creator" target="_blank"><i class="fab fa-github"></i></a>
     </div>
 </div>
 
@@ -113,16 +113,6 @@
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
         document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
-    }
-
-    // دعم اللغات تلقائياً
-    const isAr = (navigator.language || navigator.userLanguage).startsWith('ar');
-    if (!isAr) {
-        document.documentElement.dir = "ltr";
-        document.body.style.textAlign = "left";
-        document.getElementById('repo-name').innerText = "Abu Al-Hassan Repo";
-        document.getElementById('shots-text').innerText = "Screenshots:";
-        document.getElementById('change-text').innerText = "Changelog:";
     }
 </script>
 
