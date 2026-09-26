@@ -1,0 +1,16 @@
+{
+    "meta": {
+        "links": [
+            {
+                "title": "TikTok",
+                "url": "https://www.tiktok.com/@abu_al_hassan",
+                "icon": "https://www.tiktok.com/favicon.ico"
+            },
+            {
+                "title": "X (Twitter)",
+                "url": "https://x.com/abu_al_hassan",
+                "icon": "https://abs.twimg.com/favicons/twitter.3.ico"
+            }
+        ]
+    }
+}
