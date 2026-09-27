@@ -2,34 +2,43 @@
   "minVersion": "0.1",
   "class": "SileoDepiction",
   "headerImage": "https://filpmax7-creator.github.io/repo/icon.png",
-  "tintColor": "#007bff",
-  "views": [
+  "tintColor": "#0a84ff",
+  "tabs": [
     {
-      "class": "SileoDepictionScreenshotsView",
-      "itemCornerRadius": 12,
-      "itemSize": "{160, 346}",
-      "screenshots": [
+      "tabname": "Details",
+      "views": [
         {
-          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png",
-          "accessibilityText": "Screenshot 1"
+          "class": "SileoDepictionHeaderView",
+          "title": "FloatSnap"
         },
         {
-          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png",
-          "accessibilityText": "Screenshot 2"
+          "class": "SileoDepictionScreenshotsView",
+          "itemCornerRadius": 12,
+          "itemSize": "{160, 346}",
+          "screenshots": [
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png",
+              "accessibilityText": "Screenshot 1"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png",
+              "accessibilityText": "Screenshot 2"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png",
+              "accessibilityText": "Screenshot 3"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png",
+              "accessibilityText": "Screenshot 4"
+            }
+          ]
         },
         {
-          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png",
-          "accessibilityText": "Screenshot 3"
-        },
-        {
-          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png",
-          "accessibilityText": "Screenshot 4"
+          "class": "SileoDepictionMarkdownView",
+          "markdown": "### About\nFloating window control tweak for iOS.\n\n### Compatibility\nSupports iOS 15.0 - 18.0 (Rootless)."
         }
       ]
-    },
-    {
-      "class": "SileoDepictionMarkdownView",
-      "markdown": "### Features\n- Full iOS support.\n- Smooth control center tweaks."
     }
   ]
 }
