@@ -1,22 +1,35 @@
 {
   "minVersion": "0.1",
+  "class": "SileoDepiction",
   "headerImage": "https://filpmax7-creator.github.io/repo/icon.png",
   "tintColor": "#007bff",
-  "tabs": [
+  "views": [
     {
-      "tabname": "Details",
-      "views": [
+      "class": "SileoDepictionScreenshotsView",
+      "itemCornerRadius": 12,
+      "itemSize": "{160, 346}",
+      "screenshots": [
         {
-          "class": "SileoDepictionScreenshotsView",
-          "itemSize": "{160, 346}",
-          "screenshots": [
-            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png" },
-            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png" },
-            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png" },
-            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png" }
-          ]
+          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png",
+          "accessibilityText": "Screenshot 1"
+        },
+        {
+          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png",
+          "accessibilityText": "Screenshot 2"
+        },
+        {
+          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png",
+          "accessibilityText": "Screenshot 3"
+        },
+        {
+          "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png",
+          "accessibilityText": "Screenshot 4"
         }
       ]
+    },
+    {
+      "class": "SileoDepictionMarkdownView",
+      "markdown": "### Features\n- Full iOS support.\n- Smooth control center tweaks."
     }
   ]
 }
