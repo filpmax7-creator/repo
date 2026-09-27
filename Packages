@@ -11,8 +11,9 @@ SHA1: 87752187f778a7aea4309cdb8e832b98994b2d53
 SHA256: eb5ec5650a0b1e011b7c8ab699da2166a53da507655307bbfebd342d2c1eb93f
 Section: Tweaks
 Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
+Depiction: https://filpmax7-creator.github.io/repo/index.html
+SileoDepiction: https://filpmax7-creator.github.io/repo/sileo.json
 Author: Filp Max
 Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
 Name: FloatSnap
 
-SileoDepiction: https://filpmax7-creator.github.io/repo/sileo.json
