@@ -1,16 +1,22 @@
 {
-    "meta": {
-        "links": [
-            {
-                "title": "TikTok",
-                "url": "https://www.tiktok.com/@abu_al_hassan",
-                "icon": "https://www.tiktok.com/favicon.ico"
-            },
-            {
-                "title": "X (Twitter)",
-                "url": "https://x.com/abu_al_hassan",
-                "icon": "https://abs.twimg.com/favicons/twitter.3.ico"
-            }
-        ]
+  "minVersion": "0.1",
+  "headerImage": "https://filpmax7-creator.github.io/repo/icon.png",
+  "tintColor": "#007bff",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "views": [
+        {
+          "class": "SileoDepictionScreenshotsView",
+          "itemSize": "{160, 346}",
+          "screenshots": [
+            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png" },
+            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png" },
+            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png" },
+            { "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png" }
+          ]
+        }
+      ]
     }
+  ]
 }
