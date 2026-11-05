@@ -1,0 +1,434 @@
+{
+  "baseline": "2.0.0-alpha100",
+  "runtimeSourceChanged": false,
+  "files": [
+    {
+      "path": "CAKeyframeAnimation+dockBounce.h",
+      "sha256": "614bfb95af453c96579fb727b794cd3a3b90341a7562ae52ed7bb180a76e3e0e"
+    },
+    {
+      "path": "CAKeyframeAnimation+dockBounce.m",
+      "sha256": "5dd0b0e65685ce008314d134cbbdfe10b4039d046f4e44409d51acac77ae689e"
+    },
+    {
+      "path": "CIRCULAR-MODE.md",
+      "sha256": "0c584150afac6bddeb5810240929ef455c201f06fec0a7e319c6f495ef1eafdf"
+    },
+    {
+      "path": "COMPATIBILITY-REVIEW.md",
+      "sha256": "a2748f8a421e6767119ec547d62b8c8b511af96e79eee71ea87623fac5abbeb3"
+    },
+    {
+      "path": "control",
+      "sha256": "fdbcfc17f13b34cb246208a049ea792f4c0d2aca82f871b96af4891bec04a9af"
+    },
+    {
+      "path": "Harbor.plist",
+      "sha256": "eff1de2a80a1744147d6faef7f6af9fb9532c4f09e3db57876f732afb877d083"
+    },
+    {
+      "path": "HBCircularDock.h",
+      "sha256": "96786e86dc09e7aa4f6c628ac90f53bd96353d6dad5ec6ea59509a9b514c6f4a"
+    },
+    {
+      "path": "HBCircularDock.m",
+      "sha256": "e34a88f76d4bab6e6d7a76f7213a73074b8bb9d945b05df5d7757fc0e6ea391f"
+    },
+    {
+      "path": "HBCompatibility.h",
+      "sha256": "db7b8a944a70c6d22f8a5d9c7907238025fc9cea377e375a77b41fb2521258f5"
+    },
+    {
+      "path": "HBDockCapacity.h",
+      "sha256": "6be61763929430910eb32690a58363baf90e01cb2f3df346b266ec47d9d9fdff"
+    },
+    {
+      "path": "HBDockPosition.h",
+      "sha256": "6e9d6876644cc15a1c33738b267be0f0b59d46472b6627fef90bdc208a9e26df"
+    },
+    {
+      "path": "HBDockPosition.m",
+      "sha256": "32d05b5c93e981af873921ba41c3130a4eba037357d2f8d7805e8f949acd8bfb"
+    },
+    {
+      "path": "HBGlassDockView.h",
+      "sha256": "87ff1bbee533497548adff67beb9318bbba232edb3e79b263df6702cbc425f49"
+    },
+    {
+      "path": "HBGlassDockView.m",
+      "sha256": "4b778e4c428f68db52f760f4f3d70019689c397d48f35dab697535e25883366b"
+    },
+    {
+      "path": "HBHookCompatibility.h",
+      "sha256": "af3a15369a8a64ae1566be5c0a2b1107d0018fc37dff389b91c3d95c23aa1e36"
+    },
+    {
+      "path": "HBIconColor.h",
+      "sha256": "eef3551d9062fc74a78517e61b32560c8487c6e436b44e0e38fd7bd484d7a9af"
+    },
+    {
+      "path": "HBIconColor.m",
+      "sha256": "d2faac85289ed676291a9ec7c6d45700a2e769d6218f11752ff8ea47b21b81f5"
+    },
+    {
+      "path": "HBInvokeCompatibility.h",
+      "sha256": "11c36ab7dd0736022ae9f2d7904e238bd1c97c3c9fe07e3ebe68b3236304996e"
+    },
+    {
+      "path": "HBNormalMotion.h",
+      "sha256": "39cc03db5ba07f0c21af15d90c94548d379a3af3e2caf430404796c4b107053d"
+    },
+    {
+      "path": "HBNormalMotion.m",
+      "sha256": "483c73337d6a21f49474cee665241d89e0b9ddff69637e44ccc66b61bf96fa1d"
+    },
+    {
+      "path": "HBPreferences.h",
+      "sha256": "d7c5e5b6728bc9130f1996435b30b6ddabed9c08c9bfc25a67e6e520073bb06b"
+    },
+    {
+      "path": "HBPreferences.m",
+      "sha256": "a4d73b24cccdabd5ce4c0420ff987875477063bbb4a55690b808cead992e10b7"
+    },
+    {
+      "path": "LICENSE.md",
+      "sha256": "ddaa80bb140158536bf450c8efc0d6bdff7f6490a3303b0236d796de670fa09b"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "9d0c1dc6f205e5f403d68a77323ae9b282b324462891c8c72a330f8207b48a12"
+    },
+    {
+      "path": "MIGRATION.md",
+      "sha256": "9210479effc8ee581757019063ec0216288b0b8b3f7a599c0803efbe9c8e9ab4"
+    },
+    {
+      "path": "NORMAL-MOTIONS.md",
+      "sha256": "5994674bf2e8a68550264ee80b59fe1af2d36dff54b6c5d550004fdc782f3441"
+    },
+    {
+      "path": "Preferences.def",
+      "sha256": "220e8434c69c52e83710905ad77db4df6715c327bba71205bd57036dabdb29cc"
+    },
+    {
+      "path": "README.md",
+      "sha256": "64b62950e4b60332b7cb98965a7fb5af3895354fa18d9ad986975573045825f9"
+    },
+    {
+      "path": "SBIconView.xm",
+      "sha256": "695e89f5605d54f87a25b6bcb4f74f550d9608581716095d4d8facd57761ed1e"
+    },
+    {
+      "path": "Tweak.xm",
+      "sha256": "22e0ce335d8a3518552b07766e88d74010d591eb8f7b918f0565ea6bf3bd8f34"
+    },
+    {
+      "path": "extensions/UIView+Origin.h",
+      "sha256": "cdfe3e33c211eb862f65186173d4d9ccccf4c42a814d5655ef217fae944d2206"
+    },
+    {
+      "path": "extensions/UIView+Origin.m",
+      "sha256": "bc52f634938a08fc299fd9abb3c477a1150916015b1cc5fdd83405b78b821284"
+    },
+    {
+      "path": "harborprefs/entry.plist",
+      "sha256": "621d607f8b98d4ac013cd584f7f289b1b159c3667973293c4a4e29abd97d9be2"
+    },
+    {
+      "path": "harborprefs/harborprefs.xm",
+      "sha256": "ffaa6320bb31348e683d8f7103a654bb68c2810de97e8a0933b9d6b0eb877a41"
+    },
+    {
+      "path": "harborprefs/HPRootListController.m",
+      "sha256": "e5969e3ad0cf7125ec05bbee9e51fedd73e9de28729cae9c73f5f4de8f779497"
+    },
+    {
+      "path": "harborprefs/Makefile",
+      "sha256": "d1d9c62691b920c1716092940bccb3f9547f32f7ecb6804435f50810c2fea9f1"
+    },
+    {
+      "path": "include/BBBulletin.h",
+      "sha256": "89ebc8a21eb915dad2a1e6d74bb408b6645f73a79e484c6e3d0948e63c6ca521"
+    },
+    {
+      "path": "include/BBServer.h",
+      "sha256": "7c8bb2984db34b13892e3aa74743c7b681a4648219439295f5809daef9f18235"
+    },
+    {
+      "path": "include/CDStructures.h",
+      "sha256": "da6fb0008fbc8228c2daaa094eb0f0f1b40da0b17906b3737dd4f580d8d2ef74"
+    },
+    {
+      "path": "include/SBApplication.h",
+      "sha256": "94c2b334376982dcad1d6ca13aef49fdd9e824e253cd6f45cd0837664f87f088"
+    },
+    {
+      "path": "include/SBApplicationController.h",
+      "sha256": "a89c7e28764c442f9672795143250aaf70395043385866097b24b75ed63a503a"
+    },
+    {
+      "path": "include/SBApplicationIcon.h",
+      "sha256": "41e8caed01560cebe50a529980fadcb20fb80b8bd8de31137f08e905927a91f3"
+    },
+    {
+      "path": "include/SBCrossfadeIconZoomAnimator.h",
+      "sha256": "6cfbc70573df00ca34acbed42a0a178c1136a4e2bc06208c48ab2262b09bc634"
+    },
+    {
+      "path": "include/SBDockIconListView.h",
+      "sha256": "39d9f0a9b41a0f824bc0b14bab45299c4e6364cda927ce4b1a82f655a3444ac1"
+    },
+    {
+      "path": "include/SBDockView.h",
+      "sha256": "2acea40e29984ef45488d979e15901913ff02b66e6e05245d1e96507de42a8c9"
+    },
+    {
+      "path": "include/SBFolderController.h",
+      "sha256": "5ab95d3ea15cf4dc82f961b7bd3d64c1257cc4e4174b63f6c597f1b5edf1dce4"
+    },
+    {
+      "path": "include/SBFolderView.h",
+      "sha256": "3b55d1f7334ab16f891cde3f861f2b18d0e9f2ce7b5a97a911c9a3605f1df97c"
+    },
+    {
+      "path": "include/SBIcon.h",
+      "sha256": "906f782fd8101be1656e804ae47efdedc1df5dee3309ac173701517ff7ac5e0f"
+    },
+    {
+      "path": "include/SBIconAccessoryView-Protocol.h",
+      "sha256": "2c15a62333a20b0a888fd66620bc4eae2104a4d40b5cb021ea42908b5437c0a2"
+    },
+    {
+      "path": "include/SBIconAnimator.h",
+      "sha256": "7e9fe13e07fe749a87a230b7d6be81c72130948ecba4668b21269339fabda29d"
+    },
+    {
+      "path": "include/SBIconAnimatorDelegate-Protocol.h",
+      "sha256": "aaae3e605abcc85ea634fc97193c3e85aa3ad3398aff8e58f63c15f8397f337a"
+    },
+    {
+      "path": "include/SBIconBadgeView.h",
+      "sha256": "205d6c885c7821b2678e29b655e06fc6b6aa647615be8116d5cc0ce778c0adfb"
+    },
+    {
+      "path": "include/SBIconController.h",
+      "sha256": "7cab1fe9f53c3d880c9caec3633fb4a170a82b1df31d4d8c530fd5dd19d81054"
+    },
+    {
+      "path": "include/SBIconFadeAnimator.h",
+      "sha256": "7cc17c66f00ea51d40e0d1f6e14e94058e5855297d427a7f7d28bbbdeb521431"
+    },
+    {
+      "path": "include/SBIconIndexNode-Protocol.h",
+      "sha256": "5fe1211757488f2abd34578f4fb3bb73f97889dec0d40fff85d2884d44c03ef3"
+    },
+    {
+      "path": "include/SBIconIndexNodeObserver-Protocol.h",
+      "sha256": "8bbee7eca58a26354c81f10f58cf9b46c618d91aa008c49f256e7bbe773f9207"
+    },
+    {
+      "path": "include/SBIconLabelView.h",
+      "sha256": "62e40b7e2e42435512ae6cb6e767f0c688058b7be5557332552f2880454be80d"
+    },
+    {
+      "path": "include/SBIconListLayoutDelegate-Protocol.h",
+      "sha256": "c32ae67844c17b9fba29117c993c55fd249d3ff26f34911945c7ddf00c21232c"
+    },
+    {
+      "path": "include/SBIconListModel.h",
+      "sha256": "40b5f1fa679b8a539179be809de9aafe1745cfec6ccae5b1cb7c2e0078d728a9"
+    },
+    {
+      "path": "include/SBIconListView.h",
+      "sha256": "0b931eb33c6ef0c2c25b4bb18f302368166112b21b0f2657aa2db6c7fa8a9027"
+    },
+    {
+      "path": "include/SBIconModel.h",
+      "sha256": "e5976c164f3b6e7bb43c356295359c39b5e531d4dc4cb1e1db47840f63daecfd"
+    },
+    {
+      "path": "include/SBIconModelPropertyListFileStore.h",
+      "sha256": "d1f8138c7498bd8e871df03abb7f428928fa2add1541650fe19ea23572a6c748"
+    },
+    {
+      "path": "include/SBIconObserver-Protocol.h",
+      "sha256": "f081737ffb2c58884ac7b9d00a0fddc83e2dd6548777a0b1998ebcb333d6f3cb"
+    },
+    {
+      "path": "include/SBIconScrollView.h",
+      "sha256": "38d1ce9afa9e6c81a4fcacc58a2baa11c6ca88ec7ab4453c70c5f3d5e6f31a90"
+    },
+    {
+      "path": "include/SBIconView.h",
+      "sha256": "aa1f5e9948e943f8904460c9bc8f4eb068d7824a6906bba16ad1e9958adc0861"
+    },
+    {
+      "path": "include/SBIconViewDelegate-Protocol.h",
+      "sha256": "21dbdadf91c5719963cb02b917092ab6ae2b0cc4b5b0f4ccadf9d83df578e837"
+    },
+    {
+      "path": "include/SBIconViewMap.h",
+      "sha256": "c827d2953e6faf5d8ae5febd26a3df1a51077a24f518ca9b9b236471cb23373f"
+    },
+    {
+      "path": "include/SBIconViewMapDelegate-Protocol.h",
+      "sha256": "58b92e0b93b4280fdaa57bb4657d6fdd50dee537bdb31306180bd5b2ce15a507"
+    },
+    {
+      "path": "include/SBIconViewObserver-Protocol.h",
+      "sha256": "868f02600a5bec5d08dff4d4cc71a0fef00a8f909ff8a3722ab649782b27c365"
+    },
+    {
+      "path": "include/SBIconZoomAnimator.h",
+      "sha256": "c1d9e69547ce54eab87d61b859b9d20417b0292f346a9d1b6c9dabde8e7730ae"
+    },
+    {
+      "path": "include/SBReusableView-Protocol.h",
+      "sha256": "30d469b229b01bd24e9067c9732a73e59083acc55359e531dcc1e67193b6fbda"
+    },
+    {
+      "path": "include/SBReusableViewMap.h",
+      "sha256": "f6d25e5e735f980f93cceecfcbeced6a176d5412e75aeba2f883671c5c40d811"
+    },
+    {
+      "path": "include/SBReusableViewMapDelegate-Protocol.h",
+      "sha256": "472ec15b88486aa338eb404168f9e60839c206c27451d7822737360523a4e31f"
+    },
+    {
+      "path": "include/SBRootFolderController.h",
+      "sha256": "477160d8d168172bd93788386baa2c79892ae0c6cae71d872f5ab9d5d100ed06"
+    },
+    {
+      "path": "include/SBRootFolderView.h",
+      "sha256": "6388a3b10f4da1e4a1935dd839b130fd3e0d18645a97a99692182ece4fa52ddd"
+    },
+    {
+      "path": "include/SBRootIconListView.h",
+      "sha256": "0ee2c7c339a35d97fa389a36dc1848e4668ae35f57436f2b43269b60510ad8be"
+    },
+    {
+      "path": "include/SBScaleIconZoomAnimator.h",
+      "sha256": "196c3422f0b4411818d439c9eb424dd91776abb055cdce32920d8e5b05115b26"
+    },
+    {
+      "path": "include/SBUIAnimationController.h",
+      "sha256": "b88805576ea923776a2c3d29b0479c4b67418c1b4b5a726ce4adaa81fb7a151c"
+    },
+    {
+      "path": "include/SBUIAnimationControllerDelegate-Protocol.h",
+      "sha256": "d1ae62dac9482efd59f6bf8afdf7f6b8e464599d10739c11ce47f548c1b28b0b"
+    },
+    {
+      "path": "include/SBUIAnimationZoomUpApp.h",
+      "sha256": "47097b6a8234c76a74817ccc341703539f8d1148eff75e49ff45f5008cc624f0"
+    },
+    {
+      "path": "include/SBUIAnimationZoomUpAppFromHome.h",
+      "sha256": "75f6faae4afb70948c1b3bd301581323999b068d7a2068d1e84f819f4596d07a"
+    },
+    {
+      "path": "include/SBUIController.h",
+      "sha256": "2ba0f23115c9559d7151900e860c6f9865a2ea92334c1a1245b20be8cf427da6"
+    },
+    {
+      "path": "include/SBUIMainScreenAnimationController.h",
+      "sha256": "114a2b8d0746cb5527fb7cc4d74a99a676cb0accf0de4cf76302cd1e96fced49"
+    },
+    {
+      "path": "include/SBWallpaperEffectView.h",
+      "sha256": "887286300883e8eb9a68c72dc38dbd60e473c26a587b664d03ffd3f655d22bed"
+    },
+    {
+      "path": "include/SBZoomableCrossfadeView.h",
+      "sha256": "e72ae4e6499ff78be82c32cccb35576d12771639419eb04ad125133ab4ea1639"
+    },
+    {
+      "path": "include/SpringBoard.h",
+      "sha256": "a0932f4560356e7d71ce4faf5315dae472a2b571fe00080e3204e2cfc8d2efa2"
+    },
+    {
+      "path": "include/SpringBoard_Interfaces.h",
+      "sha256": "234a1fa43bf9b2d013f70163ef4b8cb2fa8879ed915241f703d3a179ed518b7e"
+    },
+    {
+      "path": "include/_UISettingsKeyObserver-Protocol.h",
+      "sha256": "542d9b1ae3da815b40d4a45b0bf2f6a6da101158861075dab341eadd52635a79"
+    },
+    {
+      "path": "tests/CarouselSafetyTests.m",
+      "sha256": "b6259cafdcb6f492493193879f74d542775d52ef8375de4485a6bdb7eac93968"
+    },
+    {
+      "path": "tests/CircularDockTests.m",
+      "sha256": "08e424b4075a4c252ed1e95a9c2071a4c8d40e429fc29a6eba313ef9b6c4761e"
+    },
+    {
+      "path": "tests/CircularHandoffTests.m",
+      "sha256": "bbc93721176f2c5d2c4f55b6f276bef890da9dbe83dc23ec3f73e89436a19f43"
+    },
+    {
+      "path": "tests/CompatibilityTests.m",
+      "sha256": "e342e1e42819915662016fc3e15a1c435ed662259d4cec33156e6ccc3f8fc0bd"
+    },
+    {
+      "path": "tests/DockCapacityTests.m",
+      "sha256": "b43de3bca88fa45f53439a8301c8bac705405691cbcc40414afb6e79a9500d2d"
+    },
+    {
+      "path": "tests/DockPositionTests.m",
+      "sha256": "5467226999438ad25a123f6c5c2c04a766f1073d65a96c7d5659e5650db24e95"
+    },
+    {
+      "path": "tests/GlassDockTests.m",
+      "sha256": "cdf07091f8cc016258cfe96a878c08ba8fe2fe8fa082489dbbbaac71e3c3960d"
+    },
+    {
+      "path": "tests/InvokeCompatibilityTests.m",
+      "sha256": "9fc87997092119bebca2368e011a66ac36dace4cff555a98ad616b0fb6650970"
+    },
+    {
+      "path": "tests/NormalMotionTests.m",
+      "sha256": "5f5cb871789882137749771a7c2a50f4e58790c3e4fd8441e5f94492d96a19aa"
+    },
+    {
+      "path": "tests/PreferencesLoadTests.m",
+      "sha256": "2ab627dfdbaa42069f4357971498b9a46e8dd0b393e94e127d2986e0eba931c2"
+    },
+    {
+      "path": "tests/SelectionColorTests.m",
+      "sha256": "81e4071f1e64285de7013dfaa6f91da7476d823d6d73f92ccfa16f53454c2228"
+    },
+    {
+      "path": "tests/SwipeLoopTests.m",
+      "sha256": "ecb7e8982701c2c28429ae82d5250155a7bd47eecd7075508c9e30e53c3b930e"
+    },
+    {
+      "path": "harborprefs/Resources/harborprefs@2x.png",
+      "sha256": "40b9e679a82bf64120446e610c48fdf8a93214ee1924ec6e698e8e0a02eb668a"
+    },
+    {
+      "path": "harborprefs/Resources/harborprefs@3x.png",
+      "sha256": "74793bb5d63b98cff4511fbdc510ef46a179b467a6f473344f57743427a41a43"
+    },
+    {
+      "path": "harborprefs/Resources/Info.plist",
+      "sha256": "0733ebe63621f53e0deb46c449d23c5b1eaf8be3018c2dd6fbe4948601b669ad"
+    },
+    {
+      "path": "harborprefs/Resources/Root.plist",
+      "sha256": "213f2db02a950eb8dc45bcd839cc646338d6618f0f90a2c05ee687d7b7d6a6e0"
+    },
+    {
+      "path": "harborprefs/Resources/twitter@2x.png",
+      "sha256": "584703345b42ef0f4e0d495150de120d1744dd13e1062124c97f1edb479b1f83"
+    },
+    {
+      "path": "harborprefs/Resources/twitter@3x.png",
+      "sha256": "584703345b42ef0f4e0d495150de120d1744dd13e1062124c97f1edb479b1f83"
+    },
+    {
+      "path": "tests/fixtures/LegacyPosition85.m",
+      "sha256": "b5a62a8b306fa07f3bb0dadcc6f9c38b01a2d582621bb742cb4b0487725bd244"
+    }
+  ]
+}

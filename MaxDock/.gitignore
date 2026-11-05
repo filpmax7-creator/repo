@@ -1,0 +1,6 @@
+.theos/
+obj/
+packages/
+*.deb
+*.log
+*.exit
