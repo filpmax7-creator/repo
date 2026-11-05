@@ -12,6 +12,8 @@ The workflow uses `macos-15`, Apple's selected Xcode toolchain, Theos, the priva
 
 Theos, SDK and action references are pinned to the revisions recorded in the workflow. Xcode/compiler versions and build/PAC output are included with the result. Homebrew tool versions and the selected Xcode image can change between hosted runs; this is not a bit-for-bit reproducible build claim.
 
+The first hosted build (run 42081952347, Xcode16.4/Apple clang17) compiled successfully but failed the original PAC gate for both binaries: imageinfo flags 0x40 and plain class metadata rebases remained. The workflow now explicitly requests `-fptrauth-objc-class-ro` and `-fptrauth-objc-isa` through Clang's frontend, scoped to Theos's `arm64e_CFLAGS`. The original gate remains unchanged. This is a compiler configuration change, not a runtime-source change.
+
 The package version becomes `2.0.0-alpha100+ci.<run number>` so it can be distinguished from the previous on-device build. Runtime source and settings code remain byte-for-byte alpha100; `MAXDOCK-CI-SOURCE-MANIFEST.json` records original input hashes. The `control` version is changed only inside the runner's build workspace.
 
 ## Gate and limits

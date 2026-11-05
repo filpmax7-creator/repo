@@ -76,7 +76,9 @@ jobs:
           assert count==1
           p.write_text(text,encoding='utf8')
           PY
-          gmake package FINALPACKAGE=1 TARGET="iphone:clang:${SDK_VERSION}:15.0" 2>&1 | tee ../ci-logs/build.log
+          # Xcode16.4 + the iOS15 deployment target did not sign class metadata
+          # by default in run 1. Enable both metadata features on arm64e only.
+          gmake package FINALPACKAGE=1 TARGET="iphone:clang:${SDK_VERSION}:15.0" arm64e_CFLAGS="-Xclang -fptrauth-objc-class-ro -Xclang -fptrauth-objc-isa" 2>&1 | tee ../ci-logs/build.log
 
       - name: Verify PAC on tweak and preferences
         working-directory: MaxDock
