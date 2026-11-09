@@ -501,7 +501,7 @@ static HBDockRowMetrics HBDockRowMetricsForCount(UIView *dockView, NSUInteger co
     // Budget the gap before sizing the icons. All row consumers use these
     // same dimensions so increasing the preference cannot overlap a full row.
     CGFloat gap = count > 1 ? MIN(slot * 0.12,
-        MAX(1.5, MIN(requested, slot) * 0.05 * HBIconPaddingMultiplier())) : 0.0;
+        MAX(1.5, MIN(60.0, slot) * 0.05 * HBIconPaddingMultiplier())) : 0.0;
     CGFloat primaryLimit = (available - gap * (count - 1)) / count;
     CGFloat crossLimit = MAX(1.0, secondary - 8.0);
     return (HBDockRowMetrics){MIN(requested, MIN(primaryLimit, crossLimit)), gap};
