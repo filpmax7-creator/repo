@@ -1,4 +1,7 @@
-#import <Preferences/PSListController.h>
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import <objc/message.h>
+#import <Preferences/PSViewController.h>
 #import <Preferences/PSSpecifier.h>
 #import <spawn.h>
 #import <CoreFoundation/CoreFoundation.h>
@@ -8,7 +11,7 @@
 
 extern char **environ;
 
-@interface HPRootListController : PSListController
+@interface HPRootListController : PSViewController
 @end
 
 static BOOL HPUsesArabic(void) {
@@ -23,11 +26,10 @@ static NSString *HPLocalized(NSString *english) {
         @"Normal Mode Animation":@"حركة الوضع الطبيعي",@"Choose Animation":@"اختيار نوع الحركة",@"Animation Strength":@"قوة الحركة",
         @"Classic":@"كلاسيكي",@"Scale Only":@"تكبير فقط",@"Fan":@"مروحة",@"Elastic Wave":@"موجة مرنة",@"3D Pop":@"بروز ثلاثي الأبعاد",
         @"Choose an animation inside Normal mode. Circular and Swipe Loop use their existing animations.":@"اختيار الحركة داخل الوضع الطبيعي فقط. الدائري والسحب المستمر يحتفظان بحركتهما.",
+        @"Rotation Speed": @"سرعة الدوران", @"Circular Icon Size": @"حجم الأيقونات الدائرية",
         @"Glass Background":@"الخلفية الزجاجية",@"Glass Dock Background":@"تفعيل الخلفية الزجاجية",@"Glass Opacity":@"كثافة الزجاج",
  @"Dock Mode":@"وضع الدوك",@"Choose Dock Mode":@"اختيار وضع الدوك",@"Normal":@"طبيعي",@"Circular":@"دائري",@"Swipe Loop":@"سحب مستمر",@"Cancel":@"إلغاء",
  @"Swipe to rotate. Tap an icon to open. Normal Dock appears while editing.":@"اسحب لتدوير الحلقة واضغط على الأيقونة لفتح التطبيق. يظهر الدوك الطبيعي أثناء تعديل الأيقونات.",
-        @"Compatibility Status": @"حالة التوافق",
-        @"iOS16 is the tested baseline. On iOS15/17/18/26 this is experimental: enable the tool, then Apply and Respring. The engine stays off at first installation on those versions.": @"iOS 16 هو المسار المختبر. على 15 و17 و18 و26 التوافق تجريبي: فعّل الأداة ثم تطبيق وإعادة تشغيل الواجهة. المحرك مطفأ عند أول تثبيت على هذه الإصدارات.",
         @"Dock Position": @"مكان الدوك",
         @"Vertical Offset": @"الموضع العمودي",
         @"Show Drag Handle While Editing": @"إظهار مقبض السحب وقت التعديل",
@@ -74,6 +76,18 @@ static NSString *HPLocalized(NSString *english) {
     return arabic[english] ?: english;
 }
 
+@interface HPRootListController ()
+@property(nonatomic) NSInteger page;
+@property(nonatomic,strong) UIStackView *content;
+@property(nonatomic,strong) UIScrollView *pageScroll;
+@property(nonatomic,strong) CAGradientLayer *backdrop;
+@property(nonatomic,strong) UIView *dockPreview;
+@property(nonatomic,strong) UIVisualEffectView *dockMaterial;
+@property(nonatomic,strong) NSArray<UIButton *> *presetButtons;
+- (void)refreshDock;
+- (void)reloadSettingsPage;
+@end
+
 @implementation HPRootListController
 - (NSNumber*)getNormalMotionStrength:(PSSpecifier*)specifier{return [self preferenceValueForKey:@"NormalMotionStrength" defaultValue:@1];}
 - (void)setNormalMotionStrength:(NSNumber*)value forSpecifier:(PSSpecifier*)specifier{double v=value.doubleValue;[self setValue:@(isfinite(v)?MAX(0,MIN(1.5,v)):1) forPreferenceKey:@"NormalMotionStrength"];}
@@ -85,7 +99,7 @@ static NSString *HPLocalized(NSString *english) {
 }
 
 - (NSNumber*)getGlassBackground:(PSSpecifier*)specifier{return [self preferenceValueForKey:@"GlassDockBackground" defaultValue:@YES];}
-- (void)setGlassBackground:(NSNumber*)value forSpecifier:(PSSpecifier*)specifier{[self setValue:@(value.boolValue) forPreferenceKey:@"GlassDockBackground"];if(value.boolValue){[self setValue:@YES forPreferenceKey:@"SlimAdaptiveBackground"];[self setValue:@NO forPreferenceKey:@"HideDockBackground"];}[self reloadSpecifiers];}
+- (void)setGlassBackground:(NSNumber*)value forSpecifier:(PSSpecifier*)specifier{[self setValue:@(value.boolValue) forPreferenceKey:@"GlassDockBackground"];if(value.boolValue){[self setValue:@YES forPreferenceKey:@"SlimAdaptiveBackground"];[self setValue:@NO forPreferenceKey:@"HideDockBackground"];}[self refreshDock];}
 - (NSNumber*)getGlassOpacity:(PSSpecifier*)specifier{return [self preferenceValueForKey:@"GlassOpacity" defaultValue:@.55];}
 - (void)setGlassOpacity:(NSNumber*)value forSpecifier:(PSSpecifier*)specifier{double v=value.doubleValue;[self setValue:@(isfinite(v)?MAX(.1,MIN(1,v)):.55) forPreferenceKey:@"GlassOpacity"];}
 
@@ -99,13 +113,6 @@ static NSString *HPLocalized(NSString *english) {
  [a addAction:[UIAlertAction actionWithTitle:HPLocalized(@"Cancel") style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:a animated:YES completion:nil];
 }
 
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.view.semanticContentAttribute = HPUsesArabic()
-        ? UISemanticContentAttributeForceRightToLeft
-        : UISemanticContentAttributeForceLeftToRight;
-}
 
 - (id)preferenceValueForKey:(NSString *)key defaultValue:(id)defaultValue {
     id value = (__bridge_transfer id)CFPreferencesCopyAppValue((__bridge CFStringRef)key,
@@ -169,25 +176,6 @@ static NSString *HPLocalized(NSString *english) {
 - (NSNumber*)getDockPositionHandle:(PSSpecifier*)specifier{return [self preferenceValueForKey:@"DockPositionHandle" defaultValue:@YES];}
 - (void)setDockPositionHandle:(NSNumber*)value forSpecifier:(PSSpecifier*)specifier{[self setValue:value forPreferenceKey:@"DockPositionHandle"];}
 
-- (NSString*)getCompatibilityStatus:(PSSpecifier*)specifier{(void)specifier;long major=NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;NSString*status=!HBSupportsOSMajor(major)?(HPUsesArabic()?@"غير مدعوم":@"Unsupported"):(major==16?(HPUsesArabic()?@"المسار المختبر":@"Tested baseline"):(HPUsesArabic()?@"تجريبي — التفعيل يحتاج إعادة تشغيل الواجهة":@"Experimental — enable and respring"));return [NSString stringWithFormat:@"iOS %ld — %@",major,status];}
-
-- (NSArray *)specifiers {
-    if (_specifiers != nil) return _specifiers;
-
-    // Use PSListController's loader instead of a manually declared private C ABI.
-    _specifiers = [[self loadSpecifiersFromPlistName:@"Root" target:self] mutableCopy];
-    for (PSSpecifier *specifier in _specifiers) {
-        NSString *name = [specifier name];
-        if (name.length > 0) [specifier setName:HPLocalized(name)];
-        NSString *footer = [specifier propertyForKey:@"footerText"];
-        if (footer.length > 0) {
-            [specifier setProperty:HPLocalized(footer) forKey:@"footerText"];
-        }
-    }
-    [self setTitle:HPLocalized(@"MaxDock")];
-    return _specifiers ?: @[];
-}
-
 - (void)applyProfileValues:(NSDictionary<NSString *, id> *)values {
     [values enumerateKeysAndObjectsUsingBlock:
         ^(NSString *key, id value, BOOL *stop) {
@@ -200,7 +188,7 @@ static NSString *HPLocalized(NSString *english) {
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
                                          CFSTR("com.eswick.harbor16/preferences.changed"),
                                          NULL, NULL, true);
-    [self reloadSpecifiers];
+    [self refreshDock];
 }
 
 - (void)applyMacOSProfile {
@@ -252,6 +240,8 @@ static NSString *HPLocalized(NSString *english) {
     [self setValue:@1 forPreferenceKey:@"NormalMotionStrength"];
     [self setValue:@YES forPreferenceKey:@"GlassDockBackground"];
     [self setValue:@.55 forPreferenceKey:@"GlassOpacity"];
+    [self setValue:nil forPreferenceKey:@"GlassCornerRadius"];
+    [self setValue:nil forPreferenceKey:@"SettingsSelectedPreset"];
     [self setValue:@0 forPreferenceKey:@"DockVerticalOffset"];
     [self setValue:@12 forPreferenceKey:@"DockCapacity"];
     [self setValue:@1 forPreferenceKey:@"CircularIconScale"];
@@ -275,7 +265,7 @@ static NSString *HPLocalized(NSString *english) {
     [self setValue:@28.0 forPreferenceKey:@"EvasionDistance"];
     [self setValue:@0.32 forPreferenceKey:@"AnimationDuration"];
     [self setValue:@54 forPreferenceKey:@"LayoutEngineVersion"];
-    [self reloadSpecifiers];
+    [self reloadSettingsPage];
 }
 
 - (void)respring {
@@ -285,5 +275,7 @@ static NSString *HPLocalized(NSString *english) {
     const char *args[] = {path, NULL};
     posix_spawn(&pid, path, NULL, NULL, (char *const *)args, environ);
 }
+
+#include "HPSettingsPages.inc"
 
 @end

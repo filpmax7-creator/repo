@@ -10,22 +10,6 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>MaxDock</string>
-			<key>footerText</key>
-			<string>iOS16 is the tested baseline. On iOS15/17/18/26 this is experimental: enable the tool, then Apply and Respring. The engine stays off at first installation on those versions.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSTitleValueCell</string>
-			<key>label</key>
-			<string>Compatibility Status</string>
-			<key>get</key>
-			<string>getCompatibilityStatus:</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
 			<string>Dock Mode</string>
 			<key>footerText</key>
 			<string>ثلاثة أوضاع: طبيعي، دائري، وسحب مستمر. بالسحب تتحرك الأيقونات أفقياً مع عمق؛ بعد آخر تطبيق يعود الأول. الضغط المطوّل يفتح تعديل الدوك الطبيعي.</string>

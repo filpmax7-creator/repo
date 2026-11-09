@@ -1,7 +1,7 @@
 include $(THEOS)/makefiles/common.mk
 BUNDLE_NAME := harborprefs
 harborprefs_FILES := HPRootListController.m
-harborprefs_FRAMEWORKS := UIKit
+harborprefs_FRAMEWORKS := UIKit QuartzCore
 harborprefs_PRIVATE_FRAMEWORKS := Preferences
 harborprefs_INSTALL_PATH := /Library/PreferenceBundles
 harborprefs_CFLAGS := -fobjc-arc

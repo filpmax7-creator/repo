@@ -1162,7 +1162,11 @@ static void HBUpdateSlimDockBackground(UIView *dockView, BOOL animated) {
                                  [NSValue valueWithCGRect:target],
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    CGFloat cornerRadius = MIN(22.0, CGRectGetHeight(target) * 0.38);
+    CGFloat defaultRadius = MIN(22.0, CGRectGetHeight(target) * 0.38);
+    CGFloat cornerRadius = HBBoolPreference(@"GlassDockBackground", YES)
+        ? MIN(CGRectGetHeight(target) * 0.5,
+              HBFloatPreference(@"GlassCornerRadius", defaultRadius, 0.0, 32.0))
+        : defaultRadius;
 
     BOOL created = NO;
     if (background == nil) {
