@@ -270,7 +270,7 @@ static CGFloat HBMaximumScale(void) {
 }
 
 static CGFloat HBIconSizeScale(void) {
-    return HBFloatPreference(@"IconSizeScale", 1.0, 0.55, 1.25);
+    return HBFloatPreference(@"IconSizeScale", 1.0, 0.55, 1.70);
 }
 
 static void HBMigrateIconSizePreference(void) {
@@ -479,15 +479,32 @@ static UIView *HBIconImageView(UIView *iconView) {
     return bestImageView;
 }
 
-static CGFloat HBTargetIconExtent(UIView *dockView, NSUInteger count,
-                                  BOOL horizontal) {
-    if (dockView == nil || count == 0) return 0.0;
-    CGFloat dockExtent = horizontal ? CGRectGetWidth(dockView.bounds)
-                                    : CGRectGetHeight(dockView.bounds);
-    CGFloat available = MAX(1.0, dockExtent - (2.0 * HBIconInset()));
-    // 60 points is the normal phone icon size. For crowded Docks, reserve
-    // eight percent of every slot as a guaranteed gap.
-    return MIN(60.0, (available / (CGFloat)count) * 0.92);
+typedef struct {
+    CGFloat iconExtent;
+    CGFloat gap;
+} HBDockRowMetrics;
+
+static HBDockRowMetrics HBDockRowMetricsForCount(UIView *dockView, NSUInteger count,
+                                                BOOL horizontal) {
+    if (dockView == nil || count == 0) return (HBDockRowMetrics){0, 0};
+
+    CGFloat primary = horizontal ? CGRectGetWidth(dockView.bounds)
+                                 : CGRectGetHeight(dockView.bounds);
+    CGFloat secondary = horizontal ? CGRectGetHeight(dockView.bounds)
+                                   : CGRectGetWidth(dockView.bounds);
+    if (primary <= 0 || secondary <= 0) return (HBDockRowMetrics){0, 0};
+
+    CGFloat edge = MIN(MAX(8.0, HBIconInset()), primary * 0.25);
+    CGFloat available = primary - 2.0 * edge;
+    CGFloat slot = available / count;
+    CGFloat requested = 60.0 * HBIconSizeScale();
+    // Budget the gap before sizing the icons. All row consumers use these
+    // same dimensions so increasing the preference cannot overlap a full row.
+    CGFloat gap = count > 1 ? MIN(slot * 0.12,
+        MAX(1.5, MIN(requested, slot) * 0.05 * HBIconPaddingMultiplier())) : 0.0;
+    CGFloat primaryLimit = (available - gap * (count - 1)) / count;
+    CGFloat crossLimit = MAX(1.0, secondary - 8.0);
+    return (HBDockRowMetrics){MIN(requested, MIN(primaryLimit, crossLimit)), gap};
 }
 
 static void HBClearDockIconSizeState(UIView *iconView) {
@@ -531,18 +548,15 @@ static void HBApplyDockIconSize(UIView *iconView) {
     // transient size and made individual icons alternate between large and
     // small. A deterministic reference gives every icon exactly one scale.
     CGFloat scale = HBIconSizeScale();
-    if (shouldApply && HBExtraDockAppsEnabled()) {
+    if (shouldApply) {
         UIView *dockView = HBOuterDockViewForView(iconView);
         NSArray<UIView *> *visibleIcons = HBVisibleDockIconViews(dockView);
         NSUInteger targetCount = visibleIcons.count;
         BOOL horizontal = CGRectGetWidth(dockView.bounds) >=
                           CGRectGetHeight(dockView.bounds);
-        CGFloat targetExtent = HBTargetIconExtent(
-            dockView, MAX((NSUInteger)1, targetCount), horizontal);
-        if (targetExtent > 0.0) {
-            CGFloat geometryScale = targetExtent / 60.0;
-            scale *= MAX(0.25, MIN(geometryScale, 4.0));
-        }
+        HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, targetCount, horizontal);
+        if (metrics.iconExtent <= 0.0) return;
+        scale = metrics.iconExtent / 60.0;
     }
     BOOL wantsCustomSize = shouldApply && fabs(scale - 1.0) >= 0.001;
     if (!wantsCustomSize) {
@@ -661,18 +675,10 @@ static CGPoint HBCorrectedDockCenterForIndex(UIView *listView,
                                      : CGRectGetMinY(dockView.bounds);
     CGFloat dockExtent = horizontal ? CGRectGetWidth(dockView.bounds)
                                     : CGRectGetHeight(dockView.bounds);
-    CGFloat targetExtent = HBTargetIconExtent(dockView, count, horizontal) *
-                           HBIconSizeScale();
-    CGFloat gap = MAX(1.5, targetExtent * 0.05 *
-                            HBIconPaddingMultiplier());
-    CGFloat desiredCenterSpan = count > 1
-        ? (targetExtent + gap) * (CGFloat)(count - 1) : 0.0;
-    CGFloat safeEdge = (targetExtent * 0.5) + 18.0;
-    CGFloat maximumCenterSpan = MAX(0.0,
-        dockExtent - (2.0 * safeEdge));
-    CGFloat centerSpan = MIN(desiredCenterSpan, maximumCenterSpan);
-    CGFloat step = count > 1
-        ? centerSpan / (CGFloat)(count - 1) : 0.0;
+    HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, count, horizontal);
+    if (metrics.iconExtent <= 0.0) return nativeCenter;
+    CGFloat step = metrics.iconExtent + metrics.gap;
+    CGFloat centerSpan = step * (count - 1);
 
     BOOL reversed = NO;
     SEL reversedSelector = NSSelectorFromString(@"isLayoutReversed");
@@ -1079,18 +1085,13 @@ static void HBUpdateSlimDockBackground(UIView *dockView, BOOL animated) {
 
     BOOL horizontal = CGRectGetWidth(dockView.bounds) >=
                       CGRectGetHeight(dockView.bounds);
-    CGFloat baseExtent = HBTargetIconExtent(dockView, icons.count, horizontal) *
-                         HBIconSizeScale();
-    if (baseExtent < 1.0 || !isfinite(baseExtent)) baseExtent = 44.0;
-
-    // Never derive the resting material from SpringBoard's private container
-    // frames. On iOS 16.7 some recycled icon hosts temporarily report the
-    // entire SBDockView bounds, which used to turn the compact frost back into
-    // Apple's full-width/full-height platter. Use the same deterministic count
-    // and size formula as Harbor's icon distributor instead.
-    CGFloat gap = MAX(1.5, baseExtent * 0.05 * HBIconPaddingMultiplier());
-    CGFloat groupedPrimary = (baseExtent * (CGFloat)icons.count) +
-                             (gap * (CGFloat)(icons.count - 1));
+    HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, icons.count, horizontal);
+    if (metrics.iconExtent <= 0.0) {
+        background.hidden = YES;
+        return;
+    }
+    CGFloat baseExtent = metrics.iconExtent;
+    CGFloat groupedPrimary = baseExtent * icons.count + metrics.gap * (icons.count - 1);
     CGFloat targetPrimary = groupedPrimary + 16.0;
     CGFloat targetSecondary = baseExtent + 10.0;
 
@@ -1846,8 +1847,7 @@ static void HBReapplyCachedDockIconSize(UIView *iconView) {
 }
 
 static void HBDistributeDockIconCenters(UIView *dockView) {
-    if (dockView == nil || !HBEnabled() || !HBExtraDockAppsEnabled() ||
-        HBIconManagerIsDraggingIcon()) return;
+    if (dockView == nil || !HBEnabled() || HBIconManagerIsDraggingIcon()) return;
     NSArray<UIView *> *icons = HBVisibleDockIconViews(dockView);
     if (icons.count == 0) return;
 
@@ -1870,19 +1870,10 @@ static void HBDistributeDockIconCenters(UIView *dockView) {
                                      : CGRectGetMinY(dockView.bounds);
     CGFloat dockExtent = horizontal ? CGRectGetWidth(dockView.bounds)
                                     : CGRectGetHeight(dockView.bounds);
-    CGFloat targetExtent = HBTargetIconExtent(dockView, ordered.count,
-                                               horizontal) *
-                           HBIconSizeScale();
-    CGFloat gap = MAX(1.5, targetExtent * 0.05 *
-                            HBIconPaddingMultiplier());
-    CGFloat desiredCenterSpan = ordered.count > 1
-        ? (targetExtent + gap) * (CGFloat)(ordered.count - 1) : 0.0;
-    CGFloat safeEdge = (targetExtent * 0.5) + 18.0;
-    CGFloat maximumCenterSpan = MAX(0.0,
-        dockExtent - (2.0 * safeEdge));
-    CGFloat centerSpan = MIN(desiredCenterSpan, maximumCenterSpan);
-    CGFloat step = ordered.count > 1
-        ? centerSpan / (CGFloat)(ordered.count - 1) : 0.0;
+    HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, ordered.count, horizontal);
+    if (metrics.iconExtent <= 0.0) return;
+    CGFloat step = metrics.iconExtent + metrics.gap;
+    CGFloat centerSpan = step * (ordered.count - 1);
     CGFloat firstCenter = dockMinimum + (dockExtent * 0.5) -
                           (centerSpan * 0.5);
 
@@ -1940,10 +1931,10 @@ static void HBRefreshDockIconSizes(UIView *dockView) {
     if (dockView == nil) return;
     NSArray<UIView *> *icons = HBVisibleDockIconViews(dockView);
     NSString *signature = [NSString stringWithFormat:
-        @"%lu:%.2f:%.2f:%.3f:%.3f:%d",
+        @"%lu:%.2f:%.2f:%.3f:%.3f:%.3f:%d",
         (unsigned long)icons.count,
         CGRectGetWidth(dockView.bounds), CGRectGetHeight(dockView.bounds),
-        HBIconSizeScale(), HBIconInset(), HBEnabled()];
+        HBIconSizeScale(), HBIconInset(), HBIconPaddingMultiplier(), HBEnabled()];
     NSString *previous = objc_getAssociatedObject(
         dockView, HBLastDockSizeSignatureKey);
     BOOL needsSlimBackground = HBEnabled() &&
@@ -1964,10 +1955,10 @@ static void HBRefreshDockIconSizes(UIView *dockView) {
     HBDistributeDockIconCenters(dockView);
     icons = HBVisibleDockIconViews(dockView);
     signature = [NSString stringWithFormat:
-        @"%lu:%.2f:%.2f:%.3f:%.3f:%d",
+        @"%lu:%.2f:%.2f:%.3f:%.3f:%.3f:%d",
         (unsigned long)icons.count,
         CGRectGetWidth(dockView.bounds), CGRectGetHeight(dockView.bounds),
-        HBIconSizeScale(), HBIconInset(), HBEnabled()];
+        HBIconSizeScale(), HBIconInset(), HBIconPaddingMultiplier(), HBEnabled()];
     objc_setAssociatedObject(dockView, HBLastDockSizeSignatureKey, signature,
                              OBJC_ASSOCIATION_COPY_NONATOMIC);
     for (UIView *iconView in icons) {

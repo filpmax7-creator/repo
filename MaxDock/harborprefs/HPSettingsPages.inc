@@ -298,13 +298,16 @@ static NSString *HPText(NSString *english, NSString *arabic) {
     slider.value = value.floatValue;
     slider.continuous = NO;
     slider.accessibilityLabel = title;
-    UILabel *reading = [self label:[NSString stringWithFormat:@"%.2g",slider.value]
+    NSNumberFormatter *formatter = [NSNumberFormatter new];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    formatter.maximumFractionDigits = [key isEqual:@"DockCapacity"] ? 0 : 2;
+    UILabel *reading = [self label:[formatter stringFromNumber:@(slider.value)]
                               size:14 weight:UIFontWeightMedium secondary:YES];
     [reading setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [slider addAction:[UIAction actionWithHandler:^(__kindof UIAction *action) {
         float position = ((UISlider *)action.sender).value;
         NSNumber *number = [key isEqual:@"DockCapacity"] ? @((NSInteger)roundf(position)) : @(position);
-        reading.text = [NSString stringWithFormat:@"%.2g", number.doubleValue];
+        reading.text = [formatter stringFromNumber:number];
         save(number);
     }] forControlEvents:UIControlEventValueChanged];
     return [self stack:@[[self stack:@[label, reading] axis:UILayoutConstraintAxisHorizontal spacing:8], slider]

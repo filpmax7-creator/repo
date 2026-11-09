@@ -188,7 +188,7 @@
 			<key>min</key>
 			<real>0.55</real>
 			<key>max</key>
-			<real>1.25</real>
+			<real>1.7</real>
 			<key>showValue</key>
 			<true/>
 			<key>get</key>
