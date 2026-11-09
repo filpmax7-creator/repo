@@ -1,110 +1,52 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>filp max</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        :root { 
-            --bg: #121212; --card: #1e1e1e; --text: #f5f5f5; --sub: #aaa; 
-            --accent: #0a84ff; --border: #333; --shadow: rgba(0,0,0,0.4);
-        }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg); margin: 0; padding: 20px; color: var(--text); direction: ltr; text-align: left; 
-        }
-        .container { max-width: 500px; margin: auto; }
-
-        .header { 
-            background: var(--card); padding: 25px; border-radius: 24px; 
-            box-shadow: 0 8px 25px var(--shadow); border: 1px solid var(--border); text-align: center; margin-bottom: 20px; 
-        }
-        .header img { width: 85px; height: 85px; border-radius: 22%; margin-bottom: 12px; }
-        .header h1 { margin: 5px 0; font-size: 24px; }
-        
-        .btn-group { display: flex; gap: 8px; margin-top: 15px; }
-        .btn { 
-            flex: 1; color: white; text-decoration: none; padding: 10px 5px; border-radius: 12px; 
-            font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; 
-        }
-
-        .package-card { 
-            background: var(--card); padding: 18px; border-radius: 22px; 
-            border: 1px solid var(--border); box-shadow: 0 4px 15px var(--shadow); 
-        }
-        .pkg-top { display: flex; align-items: center; margin-bottom: 15px; }
-        .pkg-top img { width: 55px; height: 55px; border-radius: 14px; margin-right: 12px; }
-
-        .screenshot-section { margin-top: 15px; }
-        .screenshot-title { font-size: 13px; font-weight: bold; color: var(--sub); margin-bottom: 10px; display: block; }
-        .screenshot-scroll { 
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; 
-            scrollbar-width: none; -ms-overflow-style: none; 
-        }
-        .screenshot-scroll::-webkit-scrollbar { display: none; }
-        .screenshot-scroll img { 
-            width: 150px; height: auto; border-radius: 16px; border: 1px solid var(--border); 
-            box-shadow: 0 4px 12px var(--shadow); flex-shrink: 0; object-fit: cover; 
-        }
-
-        .changelog { 
-            background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px 15px; 
-            margin-top: 18px; font-size: 13px; border-left: 3px solid var(--accent); 
-        }
-        .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 30px; }
-        .social-links a { color: var(--text); font-size: 22px; transition: 0.2s; }
-        .social-links a:hover { color: var(--accent); }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101526">
+<title>Filp Max · MaxDock Beta</title>
+<meta name="description" content="Filp Max's rootless repository, home of MaxDock Beta.">
+<link rel="icon" href="./icon.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon.png">
+<style>
+:root{color-scheme:dark;background:#101526;color:#f5f8ff;font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#283c68,transparent 42rem)}main{max-width:740px;margin:auto;padding:28px 18px 48px}
+header,.package{border:1px solid #ffffff22;background:#161e34e8;border-radius:24px;overflow:hidden}header{padding:24px;text-align:center;margin-bottom:22px}
+header img{width:76px;height:76px;border-radius:20px}h1,h2,h3,p{margin:0}p{color:#bdc9e3}.source{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+a{color:#a9d9ff;text-underline-offset:.18em}a.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 15px;border-radius:12px;border:1px solid #6dacff60;text-decoration:none;background:#254985;color:white;font-weight:650}
+.source code{display:block;margin-top:12px;flex-basis:100%;overflow-wrap:anywhere;color:#d5ddf2}
+.banner{width:100%;height:auto;display:block}.body{padding:20px}.identity{display:flex;gap:14px;align-items:center;margin-bottom:12px}.identity img{width:58px;height:58px;border-radius:14px}.tag{display:inline-block;vertical-align:middle;font-size:.65em;background:#295ba4;color:white;border-radius:99px;padding:.2em .6em}
+section{margin-top:22px}.gallery{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(150px,38%,222px);gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:8px 0 12px}
+.gallery a{scroll-snap-align:start}.gallery img{width:100%;height:auto;border-radius:12px;display:block}.gallery a:focus-visible,.links a:focus-visible{outline:2px solid #77c5ff;outline-offset:2px}
+li+li{margin-top:7px}ul{padding-left:21px;color:#d5dff4}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.links a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #ffffff26;border-radius:10px}
+</style>
 </head>
-<body>
-
-<div class="container">
-    <div class="header">
-        <img src="icon.png" alt="Icon" onerror="this.src='https://filpmax7-creator.github.io/repo/icon.png'">
-        <h1>filp max</h1>
-        <p style="color:var(--sub); margin:3px 0 0; font-size:14px;">Tools Developer</p>
-        <div class="btn-group">
-            <a href="sileo://source/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#2fbdff;"><i class="fas fa-plus"></i> Sileo</a>
-            <a href="zbra://sources/add/https://filpmax7-creator.github.io/repo/" class="btn" style="background:#f99157;"><i class="fas fa-leaf"></i> Zebra</a>
-            <a href="cydia://url/https://cydia.saurik.com/api/share#?source=https://filpmax7-creator.github.io/repo/" class="btn" style="background:#5e48e8;"><i class="fas fa-box"></i> Cydia</a>
-        </div>
-    </div>
-
-    <div class="package-card">
-        <div class="pkg-top">
-            <img src="icon.png" alt="FloatSnap" onerror="this.src='https://filpmax7-creator.github.io/repo/icon.png'">
-            <div style="flex-grow:1">
-                <h3 style="margin:0;">FloatSnap <span style="font-size:10px; background:var(--accent); color:white; padding:2px 7px; border-radius:12px; vertical-align: middle;">0.9.9.6</span></h3>
-                <p style="color:var(--sub); font-size:12px; margin: 4px 0 0;">Floating window control tweak for iOS.</p>
-            </div>
-        </div>
-
-        <div class="screenshot-section">
-            <span class="screenshot-title">Screenshots:</span>
-            <div class="screenshot-scroll">
-                <img src="screenshots/screen1.png" alt="Screen 1" onerror="this.style.display='none'">
-                <img src="screenshots/screen2.png" alt="Screen 2" onerror="this.style.display='none'">
-                <img src="screenshots/screen3.png" alt="Screen 3" onerror="this.style.display='none'">
-                <img src="screenshots/screen4.png" alt="Screen 4" onerror="this.style.display='none'">
-            </div>
-        </div>
-
-        <div class="changelog">
-            <strong style="color:var(--text);">Changelog:</strong>
-            <ul style="margin:8px 0 0; padding-left:16px; color:var(--sub); line-height: 1.5; font-size: 12px;">
-                <li>Updated package depictions and description.</li>
-                <li>Added native screenshots viewer.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="social-links">
-        <a href="https://x.com/filpmax7?s=11" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="mailto:filpmax7@gmail.com"><i class="fas fa-envelope"></i></a>
-        <a href="https://github.com/filpmax7-creator" target="_blank"><i class="fab fa-github"></i></a>
-    </div>
-</div>
-
-</body>
-</html>
+<body><main>
+<header>
+<img src="./icon.png" alt="" width="76" height="76">
+<h1>Filp Max</h1><p>Rootless iPhone tweaks</p>
+<div class="source"><a class="button" href="sileo://source/https://filpmax7-creator.github.io/repo/">Add to Sileo</a>
+<code>https://filpmax7-creator.github.io/repo/</code></div>
+</header>
+<article class="package" aria-labelledby="maxdock">
+<img class="banner" src="./icons/MaxDock-banner.png" alt="" width="1200" height="380">
+<div class="body">
+<div class="identity"><img src="./icons/MaxDock.png" alt="" width="58" height="58"><div><h2 id="maxdock">MaxDock <span class="tag">Beta</span></h2><p>2.0.0-alpha100+ci.8 · Filp Max</p></div></div>
+<p>Customize the iPhone Home Screen dock with a glass background, adjustable icons, and three ways to browse your apps.</p>
+<section aria-label="Screenshots"><h3>Screenshots</h3><div class="gallery">
+<a href="./screenshots/screen1.png"><img src="./screenshots/screen1.png" alt="Glass dock with a horizontal carousel"></a>
+<a href="./screenshots/screen2.png"><img src="./screenshots/screen2.png" alt="Magnification and app label in Normal mode"></a>
+<a href="./screenshots/screen3.png"><img src="./screenshots/screen3.png" alt="Compact layout with extra apps"></a>
+<a href="./screenshots/screen4.png"><img src="./screenshots/screen4.png" alt="Roomier layout with fewer icons"></a>
+</div></section>
+<section><h3>How it works</h3><ul>
+<li><strong>Normal</strong> gives you a single row with configurable magnification.</li>
+<li><strong>Circular</strong> lets you browse apps by rotating the dock.</li>
+<li><strong>Swipe Loop</strong> scrolls horizontally and wraps around.</li>
+</ul><p>Open Settings → MaxDock to adjust icon size, spacing, capacity and glass appearance. This beta requires a rootless jailbreak. iOS 16 is the tested baseline. Other versions allowed by the package are experimental.</p></section>
+<section><h3>Support</h3><nav class="links" aria-label="Contact Filp Max">
+<a href="https://x.com/maxlco1?s=11">𝕏 @maxlco1</a>
+<a href="https://discord.com/users/1343028389950390272">Discord</a>
+<a href="mailto:filpmax7@gmail.com">✉ Email</a>
+</nav></section>
+</div></article></main></body></html>

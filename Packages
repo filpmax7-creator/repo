@@ -1,19 +1,18 @@
-Package: local.floatsnap.tweak
-Version: 0.9.9.6-alpha-1+debug
-Architecture: iphoneos-arm64
+Package: com.eswick.harbor16
+Name: MaxDock Beta
+Depends: firmware (>= 15.0), firmware (<< 27.0), ellekit (>= 1.0), preferenceloader
+Description: Customize the iPhone Home Screen dock with a glass background, adjustable icon sizes and spacing, and three modes: Normal, Circular, and Swipe Loop.
 Maintainer: Filp Max <filpmax7@gmail.com>
-Installed-Size: 1524
-Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0), firmware (<< 27.0)
-Filename: ./local.floatsnap.tweak_0.9.9.6-alpha-1+debug_iphoneos-arm64.deb
-Size: 293222
-MD5sum: 38d80da0c98da99383c0842f91eb7104
-SHA1: 87752187f778a7aea4309cdb8e832b98994b2d53
-SHA256: eb5ec5650a0b1e011b7c8ab699da2166a53da507655307bbfebd342d2c1eb93f
-Section: Tweaks
-Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
 Author: Filp Max
-Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
-Name: FloatSnap
-
-Depiction: https://filpmax7-creator.github.io/repo/index.html
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 2.0.0-alpha100+ci.8
+Installed-Size: 816
+Filename: ./com.eswick.harbor16_2.0.0-alpha100+ci.8_iphoneos-arm64.deb
+Size: 150936
+MD5sum: 1a4d298c10d7a4d8a6432bdc83d315b8
+SHA1: ff12244e6f2357461a37bc6c9ccaf6f481965a1c
+SHA256: b7283f20e2e209ce26378701cbec99b77cab6452434caf5b46018ee08d37bc54
+Icon: https://filpmax7-creator.github.io/repo/icons/MaxDock.png
+Depiction: https://filpmax7-creator.github.io/repo/
 SileoDepiction: https://filpmax7-creator.github.io/repo/sileo.json

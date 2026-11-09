@@ -1,30 +1,102 @@
 {
-    "minVersion": "0.1",
-    "tabs": [
+  "class": "DepictionTabView",
+  "minVersion": "0.4",
+  "tintColor": "#398aff",
+  "headerImage": "https://filpmax7-creator.github.io/repo/icons/MaxDock-banner.png",
+  "tabs": [
+    {
+      "class": "DepictionStackView",
+      "tabname": "Details",
+      "views": [
         {
-            "tabname": "Details",
-            "views": [
-                {
-                    "class": "DepictionHeaderView",
-                    "title": "YTNoAds"
-                },
-                {
-                    "class": "DepictionSubheaderView",
-                    "title": "Developed by Abu Al-Hassan"
-                },
-                {
-                    "class": "DepictionButtonView",
-                    "text": "My TikTok",
-                    "action": "https://www.tiktok.com/@abu_al_hassan"
-                },
-                {
-                    "class": "DepictionButtonView",
-                    "text": "My X (Twitter)",
-                    "action": "https://x.com/abu_al_hassan"
-                }
-            ],
-            "class": "DepictionStackView"
+          "class": "DepictionSubheaderView",
+          "title": "MaxDock Beta"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "### Your dock, your way\nMaxDock gives you three ways to browse the Home Screen dock:\n\n- **Normal** keeps a single row with a configurable magnification effect.\n- **Circular** lets you swipe through a rotating dock.\n- **Swipe Loop** scrolls horizontally and wraps back to the first app.\n\nAdjust the icon size, capacity, dock position and glass appearance in **Settings → MaxDock**. Choose a preset for Gaming, Compact, or macOS, or set the controls yourself.\n\n**Rootless beta.** iOS 16 is the tested baseline. Support on other versions allowed by the package is experimental."
+        },
+        {
+          "class": "DepictionScreenshotsView",
+          "itemCornerRadius": 12,
+          "itemSize": "{185, 401}",
+          "screenshots": [
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen1.png",
+              "accessibilityText": "Glass dock with a horizontal carousel"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen2.png",
+              "accessibilityText": "Magnification and app label in Normal mode"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen3.png",
+              "accessibilityText": "Compact layout with extra apps"
+            },
+            {
+              "url": "https://filpmax7-creator.github.io/repo/screenshots/screen4.png",
+              "accessibilityText": "Roomier layout with fewer icons"
+            }
+          ]
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "2.0.0-alpha100+ci.8"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Channel",
+          "text": "Beta"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Developer",
+          "text": "Filp Max"
         }
-    ],
-    "class": "DepictionTabView"
+      ]
+    },
+    {
+      "class": "DepictionStackView",
+      "tabname": "Changelog",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "Beta · CI 8"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Raised the icon size limit to 1.70×.\n- The resting row fits icons and spacing to the available dock width.\n- Organized settings, glass preview, and a developer support page."
+        }
+      ]
+    },
+    {
+      "class": "DepictionStackView",
+      "tabname": "Support",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "Contact Filp Max"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "X · @maxlco1",
+          "action": "https://x.com/maxlco1?s=11",
+          "openExternal": true
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Discord",
+          "action": "https://discord.com/users/1343028389950390272",
+          "openExternal": true
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Email · filpmax7@gmail.com",
+          "action": "mailto:filpmax7@gmail.com",
+          "openExternal": true
+        }
+      ]
+    }
+  ]
 }

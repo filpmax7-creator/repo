@@ -1,8 +1,17 @@
-Origin: filp max
-Label: filp max
+Origin: Filp Max
+Label: Filp Max
 Suite: stable
 Version: 1.0
 Codename: ios
 Architectures: iphoneos-arm64
 Components: main
-Description: Official Repo for Abu Al-Hassan Tweaks
+Description: Rootless tweaks by Filp Max
+Date: Mon, 09 Nov 2026 19:56:22 GMT
+MD5Sum:
+ 1ab82febb523fadf620d9c7935fd227d      875 Packages
+ 23458e62c7a61dfc37693ecb9a2a6638      543 Packages.gz
+ 4512a731a4b839431570ac48964bab85      613 Packages.bz2
+SHA256:
+ 27be52d1c8b5d1e66d4a775a28d4cf559759325a945766144fcee023ac3c7333      875 Packages
+ 37b2d9911ac4d8024d1a554195e227d196fb85b09cefcfb593d8bf058c010995      543 Packages.gz
+ e3074d08d5f6bdf1d051e44e2a5943fb1c3cae50cd90b6497ff1efd171afa864      613 Packages.bz2
