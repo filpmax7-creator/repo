@@ -509,7 +509,13 @@ static NSString *HPText(NSString *english, NSString *arabic) {
         preferredStyle:UIAlertControllerStyleAlert];
     __weak HPRootListController *weakSelf = self;
     [alert addAction:[UIAlertAction actionWithTitle:HPText(@"Start", @"بدء") style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
-        [weakSelf setValue:@([NSDate date].timeIntervalSince1970) forPreferenceKey:@"DiagnosticCaptureRequest"];
+        HPRootListController *controller = weakSelf;
+        if (!controller) return;
+        CFPreferencesSetAppValue(CFSTR("DiagnosticCaptureRequest"),
+            (__bridge CFPropertyListRef)@([NSDate date].timeIntervalSince1970), CFSTR("com.eswick.harbor16"));
+        CFPreferencesAppSynchronize(CFSTR("com.eswick.harbor16"));
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+            CFSTR("com.eswick.harbor16/diagnostics.capture"), NULL, NULL, true);
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:HPLocalized(@"Cancel") style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -522,8 +528,8 @@ static NSString *HPText(NSString *english, NSString *arabic) {
     NSNumber *expected = [self preferenceValueForKey:@"DiagnosticCaptureRequest" defaultValue:@0];
     if (!request || ![request isEqualToNumber:expected]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:HPText(@"Report not ready", @"التقرير بعده ما جاهز")
-            message:HPText(@"Make sure MaxDock is enabled, then capture again and leave the Home Screen visible for 20 seconds.",
-                           @"تأكد من تفعيل MaxDock، ثم أعد الالتقاط وخلي الشاشة الرئيسية ظاهرة 20 ثانية.")
+            message:HPText(@"Respring after installing the diagnostic build, then capture again and leave the Home Screen visible for 20 seconds.",
+                           @"سوِّ Respring بعد تثبيت نسخة التشخيص، ثم أعد الالتقاط وخلي الشاشة الرئيسية ظاهرة 20 ثانية.")
             preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:HPText(@"OK", @"موافق") style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];

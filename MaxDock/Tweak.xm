@@ -2640,7 +2640,7 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @2, @"request": @(request),
+                @"schemaVersion": @3, @"request": @(request),
                 @"runtimeMethods": HBDiagnosticRuntimeMethods(),
                 @"iOS": [NSString stringWithFormat:@"%ld.%ld.%ld", (long)os.majorVersion, (long)os.minorVersion, (long)os.patchVersion],
                 @"settings": @{@"mode": mode, @"enabled": @(HBEnabled()), @"extraDockApps": @(HBExtraDockAppsEnabled()),
@@ -2660,6 +2660,16 @@ static void HBDiagnosticRequestCapture(void) {
     }
 }
 
+static void HBDiagnosticCaptureNotification(CFNotificationCenterRef center,
+                                            void *observer, CFStringRef name,
+                                            const void *object, CFDictionaryRef userInfo) {
+    (void)center; (void)observer; (void)name; (void)object; (void)userInfo;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [HBPreferences() synchronize];
+        HBDiagnosticRequestCapture();
+    });
+}
+
 static void HBPreferencesChanged(CFNotificationCenterRef center,
                                  void *observer,
                                  CFStringRef name,
@@ -2672,7 +2682,6 @@ static void HBPreferencesChanged(CFNotificationCenterRef center,
     (void)userInfo;
     dispatch_async(dispatch_get_main_queue(), ^{
         [HBPreferences() synchronize];
-        HBDiagnosticRequestCapture();
         for (UIView *dockView in HBKnownDockHosts().allObjects) {
             HBInvalidateDockSizeSignature(dockView);
         }
@@ -3482,7 +3491,13 @@ static void HBAttachGestureIfNeeded(UIView *view) {
     @autoreleasepool {
         if (!HBIsSpringBoardProcess()) return;
         long major=NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;
-        if(!HBSupportsOSMajor(major)||!HBStartupAllowedForOS(major,HBBoolPreference(@"Enabled",HBDefaultEnabledForOS(major)),[HBPreferenceValue(@"RuntimeOptInMajor")integerValue]))return;
+        if (!HBSupportsOSMajor(major)) return;
+        // The read-only report remains available when the tweak's engine is off.
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(), NULL,
+            HBDiagnosticCaptureNotification, CFSTR("com.eswick.harbor16/diagnostics.capture"),
+            NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        if(!HBStartupAllowedForOS(major,HBBoolPreference(@"Enabled",HBDefaultEnabledForOS(major)),[HBPreferenceValue(@"RuntimeOptInMajor")integerValue]))return;
         // Hook the model's configuration factory before SpringBoard builds or caches it.
         // No views, icon insertion, or persistent layout writes occur in this initializer.
         Class provider=NSClassFromString(@"SBHDefaultIconListLayoutProvider");
