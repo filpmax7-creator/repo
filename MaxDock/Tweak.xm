@@ -544,20 +544,23 @@ static void HBApplyDockIconSize(UIView *iconView) {
         HBTransform3DEqual(current, lastApplied);
 
     BOOL shouldApply = HBEnabled() && HBIconViewIsInDock(iconView);
-    // Every phone icon uses the same 60-point resting reference. Measuring an
-    // icon image while SpringBoard reparents or animates it can return a
-    // transient size and made individual icons alternate between large and
-    // small. A deterministic reference gives every icon exactly one scale.
-    CGFloat scale = HBIconSizeScale();
+    CGFloat scale = 1.0;
     if (shouldApply) {
         UIView *dockView = HBOuterDockViewForView(iconView);
-        NSArray<UIView *> *visibleIcons = HBVisibleDockIconViews(dockView);
-        NSUInteger targetCount = visibleIcons.count;
+        NSUInteger count = HBVisibleDockIconViews(dockView).count;
         BOOL horizontal = CGRectGetWidth(dockView.bounds) >=
                           CGRectGetHeight(dockView.bounds);
-        HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, targetCount, horizontal);
+        HBDockRowMetrics metrics = HBDockRowMetricsForCount(dockView, count, horizontal);
         if (metrics.iconExtent <= 0.0) return;
-        scale = metrics.iconExtent / 60.0;
+
+        // Bounds are unscaled by MaxDock's sublayer transform. Use them
+        // instead of a 60-point assumption or an animated presentation frame.
+        UIView *image = HBIconImageView(iconView) ?: iconView;
+        CGFloat nativeExtent = MAX(CGRectGetWidth(image.bounds), CGRectGetHeight(image.bounds));
+        if (!isfinite(nativeExtent) || nativeExtent < 16.0 || nativeExtent > 128.0) {
+            nativeExtent = 60.0;
+        }
+        scale = metrics.iconExtent / nativeExtent;
     }
     BOOL wantsCustomSize = shouldApply && fabs(scale - 1.0) >= 0.001;
     if (!wantsCustomSize) {
@@ -1925,6 +1928,11 @@ static void HBScheduleLateDockIconDistribution(UIView *listView) {
         }
         UIView *dockView = HBOuterDockViewForView(strongListView);
         HBDistributeDockIconCenters(dockView);
+        // Some layouts update centers through SBIconListView without running
+        // the outer Dock callback. Size the icons on this path as well.
+        for (UIView *icon in HBVisibleDockIconViews(dockView)) {
+            HBApplyDockIconSize(icon);
+        }
     });
 }
 
