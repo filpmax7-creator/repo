@@ -22,3 +22,5 @@ void HBCircularTestRotate(UIView*dock,CGFloat delta,BOOL finish,BOOL cancel);
 #ifdef __cplusplus
 }
 #endif
+
+NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock);

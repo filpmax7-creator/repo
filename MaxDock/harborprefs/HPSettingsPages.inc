@@ -377,7 +377,7 @@ static NSString *HPText(NSString *english, NSString *arabic) {
             @"ExtraDockApps",@"DockCapacity",@"IconInset",@"IconPaddingMultiplier",@"HideHomeSearch",@"AutoHideDock",
             @"resetLayoutDefaults",@"respring"]]; break;
         case 4: [self buildAppearance]; break;
-        case 5: [self buildSupport]; break;
+        case 5: [self buildSupport]; [self addDiagnosticControls]; break;
         default: [self buildHome]; break;
     }
 }
@@ -499,6 +499,50 @@ static NSString *HPText(NSString *english, NSString *arabic) {
         button.layer.borderColor = UIColor.systemBlueColor.CGColor;
         button.accessibilityTraits = UIAccessibilityTraitButton | (active ? UIAccessibilityTraitSelected : 0);
     }];
+}
+
+
+- (void)startDockDiagnostics {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:HPText(@"Capture Dock Diagnostics", @"التقاط تشخيص الدوك")
+        message:HPText(@"Tap Start, return to the Home Screen, and reproduce the overlap. Leave the Dock visible for 20 seconds, then return here and tap Share Report.",
+                       @"اضغط بدء وارجع للشاشة الرئيسية. أظهر التداخل وخلي الدوك ظاهر 20 ثانية، بعدها ارجع واضغط مشاركة التقرير.")
+        preferredStyle:UIAlertControllerStyleAlert];
+    __weak HPRootListController *weakSelf = self;
+    [alert addAction:[UIAlertAction actionWithTitle:HPText(@"Start", @"بدء") style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+        [weakSelf setValue:@([NSDate date].timeIntervalSince1970) forPreferenceKey:@"DiagnosticCaptureRequest"];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:HPLocalized(@"Cancel") style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)shareDockDiagnostics {
+    NSData *data = [NSData dataWithContentsOfFile:HBDiagnosticFile];
+    id json = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
+    NSNumber *request = [json isKindOfClass:NSDictionary.class] ? json[@"request"] : nil;
+    NSNumber *expected = [self preferenceValueForKey:@"DiagnosticCaptureRequest" defaultValue:@0];
+    if (!request || ![request isEqualToNumber:expected]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:HPText(@"Report not ready", @"التقرير بعده ما جاهز")
+            message:HPText(@"Make sure MaxDock is enabled, then capture again and leave the Home Screen visible for 20 seconds.",
+                           @"تأكد من تفعيل MaxDock، ثم أعد الالتقاط وخلي الشاشة الرئيسية ظاهرة 20 ثانية.")
+            preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:HPText(@"OK", @"موافق") style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
+    UIActivityViewController *share = [[UIActivityViewController alloc]
+        initWithActivityItems:@[[NSURL fileURLWithPath:HBDiagnosticFile]] applicationActivities:nil];
+    share.popoverPresentationController.sourceView = self.view;
+    share.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds), 1, 1);
+    [self presentViewController:share animated:YES completion:nil];
+}
+
+- (void)addDiagnosticControls {
+    __weak HPRootListController *weakSelf = self;
+    UIView *capture = [self row:HPText(@"Capture Dock Diagnostics", @"التقاط تشخيص الدوك") detail:nil
+        icon:@"waveform.path" color:UIColor.systemIndigoColor action:^{ [weakSelf startDockDiagnostics]; }];
+    UIView *share = [self row:HPText(@"Share Report", @"مشاركة التقرير") detail:nil
+        icon:@"square.and.arrow.up" color:UIColor.systemBlueColor action:^{ [weakSelf shareDockDiagnostics]; }];
+    [self.content addArrangedSubview:[self card:[self stack:@[capture,share] axis:UILayoutConstraintAxisVertical spacing:1] inset:4]];
 }
 
 - (void)buildSupport {

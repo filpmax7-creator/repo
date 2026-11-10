@@ -1,3 +1,4 @@
+#import "HBDiagnosticGeometry.h"
 #import "HBGlassDockView.h"
 #import "HBCircularDock.h"
 #import "HBIconColor.h"
@@ -141,6 +142,19 @@ void HBUpdateCircularDock(UIView*dock,UIView*surface,CGRect anchor,NSArray*rows,
  c.ring.frame=CGRectMake(x,bottom-height,width,height);c.ring.tap=tap;c.ring.save=save;c.ring.rows=clean;c.ring.alpha=c.nativeAlpha;
  if(c.ring.superview!=surface){[c.ring removeFromSuperview];[surface addSubview:c.ring];}[surface bringSubviewToFront:c.ring];c.writingAlpha=YES;dock.alpha=0;c.writingAlpha=NO;dock.userInteractionEnabled=NO;dock.accessibilityElementsHidden=YES;
  }];}@finally{c.updating=NO;}
+}
+
+NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock) {
+    HBCircularPresentation *presentation = objc_getAssociatedObject(dock, &CircleKey);
+    HBCircularView *ring = presentation.ring;
+    if (!presentation.active || !ring.window) return @{@"active": @NO};
+    NSMutableArray *tiles = [NSMutableArray array];
+    for (UIView *child in ring.subviews) {
+        if (![child isKindOfClass:UIButton.class] || tiles.count >= 100) continue;
+        [tiles addObject:HBDiagnosticView(child)];
+    }
+    return @{@"active": @YES, @"swipeMode": @(ring.swipeMode), @"phase": HBDiagnosticNumber(ring.phase),
+             @"surface": HBDiagnosticView(ring), @"tiles": tiles};
 }
 #ifdef HB_CIRCULAR_TEST
 void HBCircularTestRequestEditing(UIView*dock){[((HBCircularPresentation*)objc_getAssociatedObject(dock,&CircleKey)).ring requestEditing];}

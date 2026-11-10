@@ -1,3 +1,4 @@
+#import "HBDiagnosticGeometry.h"
 #import "HBNormalMotion.h"
 #import "HBInvokeCompatibility.h"
 #import "HBGlassDockView.h"
@@ -2521,6 +2522,76 @@ static void HBUpdateDynamicRunningAppsForDock(UIView *dockView) {
 
 // First-install random Dock insertion removed: users arrange their own icons.
 
+
+static NSDictionary *HBDiagnosticSnapshot(void) {
+    NSMutableArray *hosts = [NSMutableArray array];
+    for (UIView *dock in HBKnownDockHosts().allObjects) {
+        if (!dock.window || hosts.count >= 4) continue;
+        NSArray<UIView *> *visible = HBVisibleDockIconViews(dock);
+        NSMutableArray *icons = [NSMutableArray array];
+        BOOL horizontal = CGRectGetWidth(dock.bounds) >= CGRectGetHeight(dock.bounds);
+        HBDockRowMetrics metrics = HBDockRowMetricsForCount(dock, visible.count, horizontal);
+        for (UIView *icon in visible) {
+            if (icons.count >= 100) break;
+            UIView *image = HBIconImageView(icon);
+            [icons addObject:@{
+                @"view": HBDiagnosticView(icon), @"imageView": HBDiagnosticView(image),
+                @"parentClass": icon.superview ? NSStringFromClass(icon.superview.class) : @"",
+                @"parentSublayerTransform": HBDiagnosticTransform(icon.superview.layer.sublayerTransform),
+                @"storedSizeScale": objc_getAssociatedObject(icon, HBIconSizeEffectiveScaleKey) ?: NSNull.null
+            }];
+        }
+        [hosts addObject:@{
+            @"dock": HBDiagnosticView(dock), @"windowBounds": HBDiagnosticRect(dock.window.bounds),
+            @"visibleCount": @(visible.count), @"rowAxis": horizontal ? @"horizontal" : @"vertical",
+            @"targetIconExtent": HBDiagnosticNumber(metrics.iconExtent), @"targetGap": HBDiagnosticNumber(metrics.gap),
+            @"magnificationActive": @([objc_getAssociatedObject(dock, HBMagnificationActiveKey) boolValue]),
+            @"icons": icons, @"carousel": HBCircularDiagnosticSnapshot(dock)
+        }];
+    }
+    return @{@"secondsSinceRequest": @([NSDate date].timeIntervalSince1970 -
+                                      [HBPreferenceValue(@"DiagnosticCaptureRequest") doubleValue]),
+             @"dockHosts": hosts};
+}
+
+static void HBDiagnosticRequestCapture(void) {
+    static NSTimeInterval lastRequest;
+    NSTimeInterval request = [HBPreferenceValue(@"DiagnosticCaptureRequest") doubleValue];
+    NSTimeInterval age = [NSDate date].timeIntervalSince1970 - request;
+    if (!isfinite(request) || request <= lastRequest || age < -2 || age > 30) return;
+    lastRequest = request;
+
+    NSMutableArray *samples = [NSMutableArray arrayWithCapacity:3];
+    NSArray<NSNumber *> *delays = @[@6, @11, @16];
+    for (NSNumber *delay in delays) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay.longLongValue * NSEC_PER_SEC),
+                       dispatch_get_main_queue(), ^{
+            if (lastRequest != request) return;
+            [samples addObject:HBDiagnosticSnapshot()];
+            if (samples.count != delays.count) return;
+
+            NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
+            NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
+            NSDictionary *report = @{
+                @"schemaVersion": @1, @"request": @(request),
+                @"iOS": [NSString stringWithFormat:@"%ld.%ld.%ld", (long)os.majorVersion, (long)os.minorVersion, (long)os.patchVersion],
+                @"settings": @{@"mode": mode, @"enabled": @(HBEnabled()), @"extraDockApps": @(HBExtraDockAppsEnabled()),
+                               @"iconSize": @(HBIconSizeScale()), @"maximumScale": @(HBMaximumScale()),
+                               @"iconInset": @(HBIconInset()), @"iconPaddingMultiplier": @(HBIconPaddingMultiplier()),
+                               @"circularIconScale": @(HBFloatPreference(@"CircularIconScale", 1, .6, 1.3))},
+                @"samples": samples
+            };
+            NSData *json = [NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
+            NSError *error = nil;
+            BOOL folderReady = [NSFileManager.defaultManager createDirectoryAtPath:HBDiagnosticFile.stringByDeletingLastPathComponent
+                withIntermediateDirectories:YES attributes:nil error:&error];
+            if (!folderReady || ![json writeToFile:HBDiagnosticFile options:NSDataWritingAtomic error:&error]) {
+                os_log_error(OS_LOG_DEFAULT, "[MaxDock Diagnostics] report write failed, code=%{public}ld", (long)error.code);
+            }
+        });
+    }
+}
+
 static void HBPreferencesChanged(CFNotificationCenterRef center,
                                  void *observer,
                                  CFStringRef name,
@@ -2533,6 +2604,7 @@ static void HBPreferencesChanged(CFNotificationCenterRef center,
     (void)userInfo;
     dispatch_async(dispatch_get_main_queue(), ^{
         [HBPreferences() synchronize];
+        HBDiagnosticRequestCapture();
         for (UIView *dockView in HBKnownDockHosts().allObjects) {
             HBInvalidateDockSizeSignature(dockView);
         }

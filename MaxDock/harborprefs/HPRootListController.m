@@ -1,3 +1,4 @@
+#import "../HBDiagnosticGeometry.h"
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <objc/message.h>
