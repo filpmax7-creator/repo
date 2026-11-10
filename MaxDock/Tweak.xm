@@ -2581,7 +2581,7 @@ static void HBDiagnosticRequestCapture(void) {
                                @"circularIconScale": @(HBFloatPreference(@"CircularIconScale", 1, .6, 1.3))},
                 @"samples": samples
             };
-            NSData *json = [NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
+            NSData *json = [NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:NULL];
             NSError *error = nil;
             BOOL folderReady = [NSFileManager.defaultManager createDirectoryAtPath:HBDiagnosticFile.stringByDeletingLastPathComponent
                 withIntermediateDirectories:YES attributes:nil error:&error];

@@ -149,8 +149,8 @@ NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock) {
     HBCircularView *ring = presentation.ring;
     if (!presentation.active || !ring.window) return @{@"active": @NO};
     NSMutableArray *tiles = [NSMutableArray array];
-    for (UIView *child in ring.subviews) {
-        if (![child isKindOfClass:UIButton.class] || tiles.count >= 100) continue;
+    for (UIButton *child in ring.buttons) {
+        if (tiles.count >= 100) break;
         [tiles addObject:HBDiagnosticView(child)];
     }
     return @{@"active": @YES, @"swipeMode": @(ring.swipeMode), @"phase": HBDiagnosticNumber(ring.phase),

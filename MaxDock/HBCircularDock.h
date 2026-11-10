@@ -12,6 +12,7 @@ void HBCircularSetSwipeMode(UIView*dock,BOOL swipe);
 void HBCircularSetGlassStyle(UIView*dock,BOOL enabled,CGFloat opacity,BOOL hidden);
 void HBCircularSetSpeed(UIView*dock,CGFloat speed);
 BOOL HBCircularDockActive(UIView*dock);
+NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock);
 CGFloat HBCircularNativeAlpha(UIView*dock);
 void HBCircularSetNativeAlpha(UIView*dock,CGFloat alpha,void(^original)(CGFloat));
 #ifdef HB_CIRCULAR_TEST
@@ -22,5 +23,3 @@ void HBCircularTestRotate(UIView*dock,CGFloat delta,BOOL finish,BOOL cancel);
 #ifdef __cplusplus
 }
 #endif
-
-NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock);
