@@ -2523,10 +2523,76 @@ static void HBUpdateDynamicRunningAppsForDock(UIView *dockView) {
 // First-install random Dock insertion removed: users arrange their own icons.
 
 
+
+static NSDictionary *HBDiagnosticRuntimeMethods(void) {
+    NSDictionary *checks = @{
+        @"SBDockView": @[@"setBackgroundAlpha:", @"didMoveToWindow", @"layoutSubviews", @"setAlpha:", @"setCenter:", @"setFrame:"],
+        @"SBDockIconListView": @[@"didMoveToWindow", @"layoutSubviews", @"setAlpha:", @"setCenter:", @"setFrame:"],
+        @"SBIconListView": @[@"centerForIconAtIndex:", @"centerForIconAtIndex:metrics:", @"centerForIcon:",
+            @"centerForIcon:metrics:", @"originForIconAtCoordinate:metrics:", @"originForIconAtCoordinate:metrics:options:",
+            @"layoutSubviews", @"layout", @"iconSpacing", @"additionalLayoutInsets", @"automaticallyAdjustsLayoutMetricsToFit", @"indexOfIcon:"],
+        @"SBIconView": @[@"didMoveToSuperview", @"_updateIconImageViewAnimated:"],
+        @"SBHDefaultIconListLayoutProvider": @[@"layoutForIconLocation:"]
+    };
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    for (NSString *name in checks) {
+        Class cls = NSClassFromString(name);
+        NSMutableDictionary *methods = [NSMutableDictionary dictionary];
+        for (NSString *selector in checks[name]) {
+            Method method = cls ? class_getInstanceMethod(cls, NSSelectorFromString(selector)) : NULL;
+            const char *encoding = method ? method_getTypeEncoding(method) : NULL;
+            methods[selector] = encoding ? [NSString stringWithUTF8String:encoding] : (id)NSNull.null;
+        }
+        result[name] = @{@"classExists": @(cls != Nil), @"methods": methods};
+    }
+    return result;
+}
+
+static void HBDiagnosticFindDocks(UIView *view, NSMutableOrderedSet<UIView *> *hosts,
+                                  NSUInteger *remaining, NSUInteger depth) {
+    if (*remaining == 0 || depth > 45 || hosts.count >= 8) return;
+    (*remaining)--;
+    NSString *name = NSStringFromClass(view.class);
+    BOOL candidate = [name hasPrefix:@"SB"] && [name containsString:@"Dock"] &&
+                     [name hasSuffix:@"View"];
+    if (candidate && HBVisibleDockIconViews(view).count > 0) {
+        [hosts addObject:HBOuterDockViewForView(view)];
+    }
+    for (UIView *child in view.subviews) {
+        if (*remaining == 0 || hosts.count >= 8) break;
+        HBDiagnosticFindDocks(child, hosts, remaining, depth + 1);
+    }
+}
+
+static NSArray<UIWindow *> *HBDiagnosticWindows(void) {
+    NSMutableOrderedSet<UIWindow *> *windows = [NSMutableOrderedSet orderedSet];
+    UIApplication *application = UIApplication.sharedApplication;
+    for (UIScene *scene in application.connectedScenes) {
+        if ([scene isKindOfClass:UIWindowScene.class]) {
+            [windows addObjectsFromArray:((UIWindowScene *)scene).windows];
+        }
+    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [windows addObjectsFromArray:application.windows];
+#pragma clang diagnostic pop
+    return windows.array;
+}
+
 static NSDictionary *HBDiagnosticSnapshot(void) {
     NSMutableArray *hosts = [NSMutableArray array];
-    for (UIView *dock in HBKnownDockHosts().allObjects) {
-        if (!dock.window || hosts.count >= 4) continue;
+    NSMutableOrderedSet<UIView *> *candidates = [NSMutableOrderedSet orderedSet];
+    NSHashTable<UIView *> *registered = HBKnownDockHosts();
+    for (UIView *dock in registered.allObjects) {
+        if (dock.window) [candidates addObject:dock];
+    }
+    NSArray<UIWindow *> *windows = HBDiagnosticWindows();
+    NSUInteger remaining = 5000;
+    for (UIWindow *window in windows) {
+        if (!window.hidden) HBDiagnosticFindDocks(window, candidates, &remaining, 0);
+    }
+    for (UIView *dock in candidates) {
+        if (!dock.window || hosts.count >= 8) continue;
         NSArray<UIView *> *visible = HBVisibleDockIconViews(dock);
         NSMutableArray *icons = [NSMutableArray array];
         BOOL horizontal = CGRectGetWidth(dock.bounds) >= CGRectGetHeight(dock.bounds);
@@ -2542,6 +2608,7 @@ static NSDictionary *HBDiagnosticSnapshot(void) {
             }];
         }
         [hosts addObject:@{
+            @"registeredByMaxDock": @([registered containsObject:dock]),
             @"dock": HBDiagnosticView(dock), @"windowBounds": HBDiagnosticRect(dock.window.bounds),
             @"visibleCount": @(visible.count), @"rowAxis": horizontal ? @"horizontal" : @"vertical",
             @"targetIconExtent": HBDiagnosticNumber(metrics.iconExtent), @"targetGap": HBDiagnosticNumber(metrics.gap),
@@ -2551,7 +2618,7 @@ static NSDictionary *HBDiagnosticSnapshot(void) {
     }
     return @{@"secondsSinceRequest": @([NSDate date].timeIntervalSince1970 -
                                       [HBPreferenceValue(@"DiagnosticCaptureRequest") doubleValue]),
-             @"dockHosts": hosts};
+             @"dockHosts": hosts, @"windowCount": @(windows.count), @"viewsScanned": @(5000 - remaining)};
 }
 
 static void HBDiagnosticRequestCapture(void) {
@@ -2573,7 +2640,8 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @1, @"request": @(request),
+                @"schemaVersion": @2, @"request": @(request),
+                @"runtimeMethods": HBDiagnosticRuntimeMethods(),
                 @"iOS": [NSString stringWithFormat:@"%ld.%ld.%ld", (long)os.majorVersion, (long)os.minorVersion, (long)os.patchVersion],
                 @"settings": @{@"mode": mode, @"enabled": @(HBEnabled()), @"extraDockApps": @(HBExtraDockAppsEnabled()),
                                @"iconSize": @(HBIconSizeScale()), @"maximumScale": @(HBMaximumScale()),
