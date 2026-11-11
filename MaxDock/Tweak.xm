@@ -168,6 +168,8 @@ static NSArray<UIView *> *HBVisibleDockIconViews(UIView *dockView);
 static UIView *HBOuterDockViewForView(UIView *view);
 static NSHashTable<UIView *> *HBKnownDockHosts(void);
 static void HBRefreshAllDockHosts(void);
+static void HBDiscoverUnregisteredDock(void);
+static void HBAttachGestureIfNeeded(UIView *view);
 static void HBScheduleDockCountRefresh(void);
 static void HBUpdateDynamicRunningAppsForDock(UIView *dockView);
 static void HBLaunchApplicationBundleIdentifier(NSString *bundleIdentifier);
@@ -2021,6 +2023,7 @@ static void HBScheduleRunningIndicatorPoll(void) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
                                  (int64_t)(2.0 * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
+        HBDiscoverUnregisteredDock();
         static NSUInteger dynamicFallbackTick = 0;
         if (HBDynamicRunningAppsEnabled() &&
             (++dynamicFallbackTick % 3) == 0) {
@@ -2596,6 +2599,34 @@ static NSArray<UIWindow *> *HBDiagnosticWindows(void) {
     [windows addObjectsFromArray:application.windows];
 #pragma clang diagnostic pop
     return windows.array;
+}
+
+static void HBDiscoverUnregisteredDock(void) {
+    static NSUInteger attempts;
+    if (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion != 17 ||
+        !HBEnabled() || attempts >= 12) return;
+    for (UIView *dock in HBKnownDockHosts().allObjects) {
+        if (dock.window) return;
+    }
+    attempts++;
+
+    Class dockClass = NSClassFromString(@"SBDockView");
+    if (!dockClass) return;
+    NSMutableOrderedSet<UIView *> *candidates = [NSMutableOrderedSet orderedSet];
+    NSUInteger remaining = 5000;
+    for (UIWindow *window in HBDiagnosticWindows()) {
+        if (!window.hidden && window.alpha > 0.01) {
+            HBDiagnosticFindDocks(window, candidates, &remaining, 0);
+        }
+    }
+    for (UIView *dock in candidates) {
+        if (![dock isKindOfClass:dockClass] || !dock.window || dock.hidden ||
+            dock.alpha <= 0.01 || HBVisibleDockIconViews(dock).count == 0) continue;
+        HBAttachGestureIfNeeded(dock);
+        HBApplyDockBackgroundPreference(dock);
+        HBRefreshDockIconSizes(dock);
+        HBApplyPositionPreference(dock);
+    }
 }
 
 static NSDictionary *HBDiagnosticSnapshot(void) {
