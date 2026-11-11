@@ -1455,6 +1455,24 @@ static UIImage *HBImageFromIconImageCarrier(id);
 static NSString *HBDisplayNameForIconView(UIView*);
 static void HBLaunchDockIconView(UIView*,UIView*);
 static char HBCircleMapKey,HBCircleRowsKey,HBCircleTimeKey;
+static NSArray<UIView *> *HBCarouselSourceIcons(UIView *dock) {
+    NSArray<UIView *> *visible = HBVisibleDockIconViews(dock);
+    if (visible.count || !dock.window ||
+        NSProcessInfo.processInfo.operatingSystemVersion.majorVersion != 26) return visible;
+
+    // The iOS 26 dock can hold its icons in a hidden wrapper. Read the
+    // concrete list for the carousel without changing its visibility.
+    for (UIView *list in HBInnerDockLists(dock)) {
+        if (list.window != dock.window || list.hidden) continue;
+        CGRect inDock = [list convertRect:list.bounds toView:dock];
+        if (CGRectIsEmpty(inDock) || !CGRectIntersectsRect(inDock, dock.bounds)) continue;
+        NSMutableArray<UIView *> *icons = [NSMutableArray array];
+        HBCollectIconViews(list, icons);
+        if (icons.count && icons.count <= 100) return icons;
+    }
+    return @[];
+}
+
 static void HBApplyCircle(UIView*dock,CGRect content){
  if(!HBEnabled()||!HBCircularModeChosen()||HBIconManagerIsEditingOrDragging()){
  HBUpdateCircularDock(dock,nil,CGRectZero,@[],0,NO,nil,nil);
@@ -1464,9 +1482,19 @@ static void HBApplyCircle(UIView*dock,CGRect content){
  while(surface.superview&&(fabs(surface.bounds.size.width-screen.width)>1||fabs(surface.bounds.size.height-screen.height)>1))surface=surface.superview;
  NSMutableArray*rows=objc_getAssociatedObject(dock,&HBCircleRowsKey);NSMapTable*map=objc_getAssociatedObject(dock,&HBCircleMapKey);double now=NSDate.timeIntervalSinceReferenceDate;
  if(!rows||now-[objc_getAssociatedObject(dock,&HBCircleTimeKey)doubleValue]>.5){rows=[NSMutableArray new];map=[NSMapTable strongToWeakObjectsMapTable];
- for(UIView*icon in HBVisibleDockIconViews(dock)){NSString*key=HBIconBundleIdentifier(icon)?:[NSString stringWithFormat:@"icon-%p",icon];UIImage*image=HBImageFromIconImageCarrier(HBIconImageView(icon)?:icon);if(!image)image=[UIImage systemImageNamed:@"app.fill"];[rows addObject:@{@"key":key,@"title":HBDisplayNameForIconView(icon)?:@"",@"image":image,@"badge":@""}];[map setObject:icon forKey:key];}
+ for(UIView*icon in HBCarouselSourceIcons(dock)){NSString*key=HBIconBundleIdentifier(icon)?:[NSString stringWithFormat:@"icon-%p",icon];UIImage*image=HBImageFromIconImageCarrier(HBIconImageView(icon)?:icon);if(!image)image=[UIImage systemImageNamed:@"app.fill"];[rows addObject:@{@"key":key,@"title":HBDisplayNameForIconView(icon)?:@"",@"image":image,@"badge":@""}];[map setObject:icon forKey:key];}
  objc_setAssociatedObject(dock,&HBCircleRowsKey,rows,OBJC_ASSOCIATION_RETAIN_NONATOMIC);objc_setAssociatedObject(dock,&HBCircleTimeKey,@(now),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
  objc_setAssociatedObject(dock,&HBCircleMapKey,map,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}__weak UIView*weakDock=dock;
+ if (!rows.count) {
+     HBUpdateCircularDock(dock,nil,CGRectZero,@[],0,NO,nil,nil);
+     return;
+ }
+ if (CGRectIsNull(content) || CGRectIsEmpty(content)) {
+     for (UIView *icon in HBCarouselSourceIcons(dock)) {
+         UIView *image = HBIconImageView(icon) ?: icon;
+         content = CGRectUnion(content, [image convertRect:image.bounds toView:dock]);
+     }
+ }
  HBCircularSetIconScale(dock,HBFloatPreference(@"CircularIconScale",1,.6,1.3));
  HBCircularSetSwipeMode(dock,HBSwipeModeChosen());
  NSString*phaseKey=HBSwipeModeChosen()?@"SwipePhase":@"CircularPhase";
@@ -2655,7 +2683,9 @@ static void HBDiscoverUnregisteredDock(void) {
     }
     for (UIView *dock in candidates) {
         if (![dock isKindOfClass:dockClass] || !dock.window || dock.hidden ||
-            dock.alpha <= 0.01 || HBVisibleDockIconViews(dock).count == 0) continue;
+            dock.alpha <= 0.01) continue;
+        if (HBVisibleDockIconViews(dock).count == 0 &&
+            (!HBCircularModeChosen() || HBCarouselSourceIcons(dock).count == 0)) continue;
         HBAttachGestureIfNeeded(dock);
         HBApplyDockBackgroundPreference(dock);
         HBRefreshDockIconSizes(dock);
@@ -2703,6 +2733,7 @@ static NSDictionary *HBDiagnosticSnapshot(void) {
         }
         [hosts addObject:@{
             @"innerLists": innerLists,
+            @"carouselSourceCount": @(HBCarouselSourceIcons(dock).count),
             @"registeredByMaxDock": @([registered containsObject:dock]),
             @"dock": HBDiagnosticView(dock), @"windowBounds": HBDiagnosticRect(dock.window.bounds),
             @"visibleCount": @(visible.count), @"rowAxis": horizontal ? @"horizontal" : @"vertical",
@@ -2735,7 +2766,7 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @5, @"request": @(request),
+                @"schemaVersion": @6, @"request": @(request),
                 @"runtimeMethods": HBDiagnosticRuntimeMethods(),
                 @"engineTrace": @{@"allowedAtHookStartup": @(HBDiagnosticStartupAllowed),
                     @"dockHookInitialized": @(HBDiagnosticDockHookInstalled),
