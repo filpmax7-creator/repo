@@ -528,6 +528,15 @@ static void HBSetSublayerTransformWithoutAnimation(UIView *iconView,
     [CATransaction commit];
 }
 
+// These counters are only written by SpringBoard's main-thread view callbacks.
+static BOOL HBDiagnosticStartupAllowed;
+static BOOL HBDiagnosticDockHookInstalled;
+static BOOL HBDiagnosticListHookInstalled;
+static NSUInteger HBDiagnosticDockLayouts;
+static NSUInteger HBDiagnosticListLayouts;
+static NSUInteger HBDiagnosticLatePasses;
+static NSUInteger HBDiagnosticSizeAttempts;
+
 static void HBApplyDockIconSize(UIView *iconView) {
     if (iconView == nil) return;
 
@@ -546,6 +555,7 @@ static void HBApplyDockIconSize(UIView *iconView) {
     BOOL shouldApply = HBEnabled() && HBIconViewIsInDock(iconView);
     CGFloat scale = 1.0;
     if (shouldApply) {
+        HBDiagnosticSizeAttempts++;
         UIView *dockView = HBOuterDockViewForView(iconView);
         NSUInteger count = HBVisibleDockIconViews(dockView).count;
         BOOL horizontal = CGRectGetWidth(dockView.bounds) >=
@@ -1926,6 +1936,7 @@ static void HBScheduleLateDockIconDistribution(UIView *listView) {
             !HBListViewIsInDock(strongListView)) {
             return;
         }
+        HBDiagnosticLatePasses++;
         UIView *dockView = HBOuterDockViewForView(strongListView);
         HBDistributeDockIconCenters(dockView);
         // Some layouts update centers through SBIconListView without running
@@ -2648,8 +2659,13 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @3, @"request": @(request),
+                @"schemaVersion": @4, @"request": @(request),
                 @"runtimeMethods": HBDiagnosticRuntimeMethods(),
+                @"engineTrace": @{@"allowedAtHookStartup": @(HBDiagnosticStartupAllowed),
+                    @"dockHookInitialized": @(HBDiagnosticDockHookInstalled),
+                    @"iconListHookInitialized": @(HBDiagnosticListHookInstalled),
+                    @"outerDockLayouts": @(HBDiagnosticDockLayouts), @"dockListLayouts": @(HBDiagnosticListLayouts),
+                    @"lateDockPasses": @(HBDiagnosticLatePasses), @"dockSizeAttempts": @(HBDiagnosticSizeAttempts)},
                 @"iOS": [NSString stringWithFormat:@"%ld.%ld.%ld", (long)os.majorVersion, (long)os.minorVersion, (long)os.patchVersion],
                 @"settings": @{@"mode": mode, @"enabled": @(HBEnabled()), @"extraDockApps": @(HBExtraDockAppsEnabled()),
                                @"iconSize": @(HBIconSizeScale()), @"maximumScale": @(HBMaximumScale()),
@@ -3225,6 +3241,7 @@ static void HBAttachGestureIfNeeded(UIView *view) {
 
 - (void)layoutSubviews {
     %orig;
+    HBDiagnosticDockLayouts++;
     UIView *dockView = (UIView *)self;
     HBAttachGestureIfNeeded(dockView);
     HBApplyDockBackgroundPreference(dockView);
@@ -3441,6 +3458,7 @@ static void HBAttachGestureIfNeeded(UIView *view) {
     UIView *listView = (UIView *)self;
     if (HBEnabled() && HBExtraDockAppsEnabled() &&
         HBListViewIsInDock(listView)) {
+        HBDiagnosticListLayouts++;
         HBScheduleLateDockIconDistribution(listView);
     }
 }
@@ -3519,7 +3537,10 @@ static void HBAttachGestureIfNeeded(UIView *view) {
     @autoreleasepool {
         if (!HBIsSpringBoardProcess()) return;
         long major=NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;
-        if(!HBStartupAllowedForOS(major,HBBoolPreference(@"Enabled",HBDefaultEnabledForOS(major)),[HBPreferenceValue(@"RuntimeOptInMajor")integerValue]))return;
+        HBDiagnosticStartupAllowed = HBStartupAllowedForOS(major,
+            HBBoolPreference(@"Enabled", HBDefaultEnabledForOS(major)),
+            [HBPreferenceValue(@"RuntimeOptInMajor") integerValue]);
+        if (!HBDiagnosticStartupAllowed) return;
 
         // Gate before migrations, observers, timers, hooks, or icon-model writes.
         if (!HBSupportsOSMajor(NSProcessInfo.processInfo.operatingSystemVersion.majorVersion)) {
@@ -3569,9 +3590,9 @@ static void HBAttachGestureIfNeeded(UIView *view) {
                          "[Harbor] using lifecycle-only dock icon sizing");
         }
         if (dockClass != Nil && [dockClass isSubclassOfClass:UIView.class]) {
-            if (HBHookTypesMatch(dockClass, @{@"setBackgroundAlpha:":@[@"v",@"d"],@"didMoveToWindow":@[@"v"],@"layoutSubviews":@[@"v"],@"setAlpha:":@[@"v",@(@encode(CGFloat))],@"setCenter:":@[@"v",@(@encode(CGPoint))],@"setFrame:":@[@"v",@(@encode(CGRect))]})) { %init(HarborDockViewCore, SBDockView = dockClass); } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborDockViewCore: incompatible method signature; skipped"); }
+            if (HBHookTypesMatch(dockClass, @{@"setBackgroundAlpha:":@[@"v",@"d"],@"didMoveToWindow":@[@"v"],@"layoutSubviews":@[@"v"],@"setAlpha:":@[@"v",@(@encode(CGFloat))],@"setCenter:":@[@"v",@(@encode(CGPoint))],@"setFrame:":@[@"v",@(@encode(CGRect))]})) { %init(HarborDockViewCore, SBDockView = dockClass); HBDiagnosticDockHookInstalled = YES; } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborDockViewCore: incompatible method signature; skipped"); }
         } else if (dockListClass != Nil && [dockListClass isSubclassOfClass:UIView.class]) {
-            if (HBHookTypesMatch(dockListClass, @{@"didMoveToWindow":@[@"v"],@"layoutSubviews":@[@"v"],@"setAlpha:":@[@"v",@(@encode(CGFloat))],@"setCenter:":@[@"v",@(@encode(CGPoint))],@"setFrame:":@[@"v",@(@encode(CGRect))]})) { %init(HarborDockListFallbackCore, SBDockIconListView = dockListClass); } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborDockListFallbackCore: incompatible method signature; skipped"); }
+            if (HBHookTypesMatch(dockListClass, @{@"didMoveToWindow":@[@"v"],@"layoutSubviews":@[@"v"],@"setAlpha:":@[@"v",@(@encode(CGFloat))],@"setCenter:":@[@"v",@(@encode(CGPoint))],@"setFrame:":@[@"v",@(@encode(CGRect))]})) { %init(HarborDockListFallbackCore, SBDockIconListView = dockListClass); HBDiagnosticDockHookInstalled = YES; } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborDockListFallbackCore: incompatible method signature; skipped"); }
             os_log_error(OS_LOG_DEFAULT, "[Harbor] using inner dock gesture fallback");
         }
 
@@ -3614,7 +3635,7 @@ static void HBAttachGestureIfNeeded(UIView *view) {
  @"layoutSubviews":@[@"v"],@"layout":@[@"@"],@"iconSpacing":@[@(@encode(CGSize))],
  @"additionalLayoutInsets":@[@(@encode(UIEdgeInsets))],@"automaticallyAdjustsLayoutMetricsToFit":@[@"B"],
  @"indexOfIcon:":@[@"Q",@"@"]
- })) { %init(HarborModernIconListLayout, SBIconListView = iconListClass); } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborModernIconListLayout: incompatible method signature; skipped"); }
+ })) { %init(HarborModernIconListLayout, SBIconListView = iconListClass); HBDiagnosticListHookInstalled = YES; } else { os_log_error(OS_LOG_DEFAULT, "[Harbor] HarborModernIconListLayout: incompatible method signature; skipped"); }
         } else {
             os_log_error(OS_LOG_DEFAULT,
                          "[Harbor] iOS 16 dock layout API unavailable; capacity disabled");
