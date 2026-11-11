@@ -1027,9 +1027,43 @@ static void HBCollectIconViews(UIView *root, NSMutableArray<UIView *> *result) {
     }
 }
 
+static NSArray<UIView *> *HBInnerDockLists(UIView *dockView) {
+    Class listClass = NSClassFromString(@"SBDockIconListView");
+    if (!listClass || !dockView) return @[];
+    NSMutableArray *lists = [NSMutableArray array];
+    NSMutableArray *pending = [dockView.subviews mutableCopy];
+    for (NSUInteger inspected = 0; pending.count && inspected < 384; inspected++) {
+        UIView *view = pending.lastObject;
+        [pending removeLastObject];
+        if ([view isKindOfClass:listClass]) [lists addObject:view];
+        else [pending addObjectsFromArray:view.subviews];
+    }
+    return lists;
+}
+
 static NSArray<UIView *> *HBVisibleDockIconViews(UIView *dockView) {
     NSMutableArray<UIView *> *icons = [NSMutableArray array];
     HBCollectIconViews(dockView, icons);
+    if (icons.count || !dockView.window ||
+        NSProcessInfo.processInfo.operatingSystemVersion.majorVersion != 26) return icons;
+
+    // Check the concrete list when an intermediate container's model alpha
+    // differs from what SpringBoard is currently presenting on screen.
+    for (UIView *list in HBInnerDockLists(dockView)) {
+        BOOL visible = YES;
+        for (UIView *ancestor = list; ancestor && ancestor != dockView; ancestor = ancestor.superview) {
+            CALayer *layer = ancestor.layer.presentationLayer ?: ancestor.layer;
+            if (ancestor.hidden || layer.opacity <= 0.01) {
+                visible = NO;
+                break;
+            }
+        }
+        if (!visible) continue;
+        CGRect inDock = [list convertRect:list.bounds toView:dockView];
+        if (CGRectIsEmpty(inDock) || !CGRectIntersectsRect(inDock, dockView.bounds)) continue;
+        HBCollectIconViews(list, icons);
+        if (icons.count) break;
+    }
     return icons;
 }
 
@@ -2603,8 +2637,8 @@ static NSArray<UIWindow *> *HBDiagnosticWindows(void) {
 
 static void HBDiscoverUnregisteredDock(void) {
     static NSUInteger attempts;
-    if (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion != 17 ||
-        !HBEnabled() || attempts >= 12) return;
+    NSInteger major = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;
+    if ((major != 17 && major != 26) || !HBEnabled() || attempts >= 12) return;
     for (UIView *dock in HBKnownDockHosts().allObjects) {
         if (dock.window) return;
     }
@@ -2657,7 +2691,18 @@ static NSDictionary *HBDiagnosticSnapshot(void) {
                 @"storedSizeScale": objc_getAssociatedObject(icon, HBIconSizeEffectiveScaleKey) ?: NSNull.null
             }];
         }
+        NSMutableArray *innerLists = [NSMutableArray array];
+        for (UIView *list in HBInnerDockLists(dock)) {
+            NSMutableArray *containers = [NSMutableArray array];
+            for (UIView *view = list; view && view != dock && containers.count < 12; view = view.superview) {
+                [containers addObject:HBDiagnosticView(view)];
+            }
+            [innerLists addObject:@{@"containers": containers,
+                @"iconCountBelowList": @(HBVisibleDockIconViews(list).count)}];
+            if (innerLists.count >= 8) break;
+        }
         [hosts addObject:@{
+            @"innerLists": innerLists,
             @"registeredByMaxDock": @([registered containsObject:dock]),
             @"dock": HBDiagnosticView(dock), @"windowBounds": HBDiagnosticRect(dock.window.bounds),
             @"visibleCount": @(visible.count), @"rowAxis": horizontal ? @"horizontal" : @"vertical",
@@ -2690,7 +2735,7 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @4, @"request": @(request),
+                @"schemaVersion": @5, @"request": @(request),
                 @"runtimeMethods": HBDiagnosticRuntimeMethods(),
                 @"engineTrace": @{@"allowedAtHookStartup": @(HBDiagnosticStartupAllowed),
                     @"dockHookInitialized": @(HBDiagnosticDockHookInstalled),
