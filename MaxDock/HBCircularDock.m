@@ -153,7 +153,12 @@ NSDictionary *HBCircularDiagnosticSnapshot(UIView *dock) {
         if (tiles.count >= 100) break;
         [tiles addObject:HBDiagnosticView(child)];
     }
-    return @{@"active": @YES, @"swipeMode": @(ring.swipeMode), @"phase": HBDiagnosticNumber(ring.phase),
+    NSUInteger placeholderCount = 0;
+    for (NSDictionary *row in ring.rows) {
+        if ([row[@"placeholder"] boolValue]) placeholderCount++;
+    }
+    return @{@"active": @YES, @"placeholderCount": @(placeholderCount),
+             @"swipeMode": @(ring.swipeMode), @"phase": HBDiagnosticNumber(ring.phase),
              @"surface": HBDiagnosticView(ring), @"tiles": tiles};
 }
 #ifdef HB_CIRCULAR_TEST

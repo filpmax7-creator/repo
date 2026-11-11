@@ -1473,6 +1473,8 @@ static NSArray<UIView *> *HBCarouselSourceIcons(UIView *dock) {
     return @[];
 }
 
+static UIImage *HBCarouselIconArtwork(UIView *view, NSString *bundleIdentifier);
+
 static void HBApplyCircle(UIView*dock,CGRect content){
  if(!HBEnabled()||!HBCircularModeChosen()||HBIconManagerIsEditingOrDragging()){
  HBUpdateCircularDock(dock,nil,CGRectZero,@[],0,NO,nil,nil);
@@ -1482,7 +1484,17 @@ static void HBApplyCircle(UIView*dock,CGRect content){
  while(surface.superview&&(fabs(surface.bounds.size.width-screen.width)>1||fabs(surface.bounds.size.height-screen.height)>1))surface=surface.superview;
  NSMutableArray*rows=objc_getAssociatedObject(dock,&HBCircleRowsKey);NSMapTable*map=objc_getAssociatedObject(dock,&HBCircleMapKey);double now=NSDate.timeIntervalSinceReferenceDate;
  if(!rows||now-[objc_getAssociatedObject(dock,&HBCircleTimeKey)doubleValue]>.5){rows=[NSMutableArray new];map=[NSMapTable strongToWeakObjectsMapTable];
- for(UIView*icon in HBCarouselSourceIcons(dock)){NSString*key=HBIconBundleIdentifier(icon)?:[NSString stringWithFormat:@"icon-%p",icon];UIImage*image=HBImageFromIconImageCarrier(HBIconImageView(icon)?:icon);if(!image)image=[UIImage systemImageNamed:@"app.fill"];[rows addObject:@{@"key":key,@"title":HBDisplayNameForIconView(icon)?:@"",@"image":image,@"badge":@""}];[map setObject:icon forKey:key];}
+ for (UIView *icon in HBCarouselSourceIcons(dock)) {
+     NSString *bundleIdentifier = HBIconBundleIdentifier(icon);
+     NSString *key = bundleIdentifier ?: [NSString stringWithFormat:@"icon-%p", icon];
+     UIImage *image = HBCarouselIconArtwork(icon, bundleIdentifier);
+     BOOL placeholder = image == nil;
+     if (!image) image = [UIImage systemImageNamed:@"app.fill"];
+     if (!image) continue;
+     [rows addObject:@{@"key": key, @"title": HBDisplayNameForIconView(icon) ?: @"",
+                       @"image": image, @"badge": @"", @"placeholder": @(placeholder)}];
+     [map setObject:icon forKey:key];
+ }
  objc_setAssociatedObject(dock,&HBCircleRowsKey,rows,OBJC_ASSOCIATION_RETAIN_NONATOMIC);objc_setAssociatedObject(dock,&HBCircleTimeKey,@(now),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
  objc_setAssociatedObject(dock,&HBCircleMapKey,map,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}__weak UIView*weakDock=dock;
  if (!rows.count) {
@@ -2319,6 +2331,55 @@ static UIImage *HBImageFromIconImageCarrier(id carrier) {
     return HBImageFromIconImageCarrierDepth(carrier, 0);
 }
 
+static UIImage *HBCarouselIconArtwork(UIView *view, NSString *bundleIdentifier) {
+    UIImage *image = HBImageFromIconImageCarrier(HBIconImageView(view));
+    if (image) return image;
+    image = HBImageFromIconImageCarrier(view);
+    if (image || NSProcessInfo.processInfo.operatingSystemVersion.majorVersion != 26) return image;
+
+    id model = HBObjectForZeroArgumentSelector(view, @"icon");
+    if ([view isKindOfClass:HBDynamicRunningIconView.class]) {
+        model = ((HBDynamicRunningIconView *)view).modelIcon;
+    }
+    image = HBImageFromIconImageCarrier(model);
+    if (image) return image;
+
+    // The hidden view may never render its image. Ask the app-icon cache for
+    // full-color artwork. Check each private signature before calling it.
+    if (bundleIdentifier.length) {
+        Class imageClass = UIImage.class;
+        Class meta = object_getClass(imageClass);
+        NSString *name = @"_applicationIconImageForBundleIdentifier:format:scale:";
+        SEL selector = NSSelectorFromString(name);
+        CGFloat scale = view.window.screen.scale ?: UIScreen.mainScreen.scale;
+        @try {
+            if (HBHookTypesMatch(meta, @{name: @[@"@", @"@", @"i", @(@encode(CGFloat))]})) {
+                image = ((id (*)(id, SEL, id, int, CGFloat))objc_msgSend)(imageClass, selector, bundleIdentifier, 2, scale);
+            } else if (HBHookTypesMatch(meta, @{name: @[@"@", @"@", @(@encode(NSInteger)), @(@encode(CGFloat))]})) {
+                image = ((id (*)(id, SEL, id, NSInteger, CGFloat))objc_msgSend)(imageClass, selector, bundleIdentifier, 2, scale);
+            } else if (HBHookTypesMatch(meta, @{name: @[@"@", @"@", @(@encode(NSUInteger)), @(@encode(CGFloat))]})) {
+                image = ((id (*)(id, SEL, id, NSUInteger, CGFloat))objc_msgSend)(imageClass, selector, bundleIdentifier, 2, scale);
+            }
+            if ([image isKindOfClass:UIImage.class]) return [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } @catch (__unused NSException *exception) {}
+    }
+
+    for (NSString *name in @[@"getIconImage:", @"generateIconImage:"]) {
+        SEL selector = NSSelectorFromString(name);
+        @try {
+            if (HBHookTypesMatch([model class], @{name: @[@"@", @"i"]})) {
+                image = ((id (*)(id, SEL, int))objc_msgSend)(model, selector, 2);
+            } else if (HBHookTypesMatch([model class], @{name: @[@"@", @(@encode(NSInteger))]})) {
+                image = ((id (*)(id, SEL, NSInteger))objc_msgSend)(model, selector, 2);
+            } else if (HBHookTypesMatch([model class], @{name: @[@"@", @(@encode(NSUInteger))]})) {
+                image = ((id (*)(id, SEL, NSUInteger))objc_msgSend)(model, selector, 2);
+            } else continue;
+            if ([image isKindOfClass:UIImage.class]) return [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } @catch (__unused NSException *exception) {}
+    }
+    return nil;
+}
+
 static UIView *HBCreateNativeIconImageView(id icon, id manager) {
     Class imageViewClass = NSClassFromString(@"SBIconImageView");
     if (imageViewClass == Nil ||
@@ -2766,7 +2827,7 @@ static void HBDiagnosticRequestCapture(void) {
             NSOperatingSystemVersion os = NSProcessInfo.processInfo.operatingSystemVersion;
             NSString *mode = HBSwipeModeChosen() ? @"swipe" : (HBCircularModeChosen() ? @"circular" : @"normal");
             NSDictionary *report = @{
-                @"schemaVersion": @6, @"request": @(request),
+                @"schemaVersion": @7, @"request": @(request),
                 @"runtimeMethods": HBDiagnosticRuntimeMethods(),
                 @"engineTrace": @{@"allowedAtHookStartup": @(HBDiagnosticStartupAllowed),
                     @"dockHookInitialized": @(HBDiagnosticDockHookInstalled),
