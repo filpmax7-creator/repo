@@ -35,11 +35,44 @@ int main(int argc,char **argv){@autoreleasepool{
  }
  TessBaseAPI *api=TessBaseAPICreate();if(!api){free(pixels);return result(nil,0,@"engine");}
  if(TessBaseAPIInit3(api,models.fileSystemRepresentation,"ara+eng")!=0){TessBaseAPIDelete(api);free(pixels);return result(nil,0,@"models");}
- TessBaseAPISetPageSegMode(api, height > width * 0.65 ? PSM_AUTO : PSM_SINGLE_BLOCK);TessBaseAPISetImage(api,pixels,(int)width,(int)height,1,(int)width);TessBaseAPISetSourceResolution(api,300);
- ETEXT_DESC *monitor=TessMonitorCreate();TessMonitorSetDeadlineMSecs(monitor,12000);
- int status=TessBaseAPIRecognize(api,monitor);TessMonitorDelete(monitor);
- char *utf8=status==0?TessBaseAPIGetUTF8Text(api):NULL;
- NSString *text=utf8?[[NSString alloc] initWithUTF8String:utf8]:@"";int confidence=TessBaseAPIMeanTextConf(api);
- if(utf8)TessDeleteText(utf8);TessBaseAPIEnd(api);TessBaseAPIDelete(api);free(pixels);
- return result([text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet],confidence,status==0?nil:@"recognition");
+ TessBaseAPISetPageSegMode(api, PSM_SINGLE_BLOCK);
+ TessBaseAPISetImage(api, pixels, (int)width, (int)height, 1, (int)width);
+ TessBaseAPISetSourceResolution(api, 300);
+ double start = NSProcessInfo.processInfo.systemUptime;
+ ETEXT_DESC *monitor = TessMonitorCreate();
+ TessMonitorSetDeadlineMSecs(monitor, 9000);
+ int status = TessBaseAPIRecognize(api, monitor);
+ TessMonitorDelete(monitor);
+ char *utf8 = status == 0 ? TessBaseAPIGetUTF8Text(api) : NULL;
+ NSString *text = utf8 ? [[NSString alloc] initWithUTF8String:utf8] : @"";
+ int confidence = status == 0 ? TessBaseAPIMeanTextConf(api) : 0;
+ if (utf8) TessDeleteText(utf8);
+
+ // A sparse or irregular crop may need automatic page segmentation. Preserve
+ // the established single-block result unless the second pass improves it.
+ double remaining = 12 - (NSProcessInfo.processInfo.systemUptime - start);
+ if (remaining > 1 && (confidence < 60 || !text.length)) {
+  TessBaseAPISetPageSegMode(api, PSM_AUTO);
+  TessBaseAPISetImage(api, pixels, (int)width, (int)height, 1, (int)width);
+  TessBaseAPISetSourceResolution(api, 300);
+  monitor = TessMonitorCreate();
+  TessMonitorSetDeadlineMSecs(monitor, (int)(remaining * 1000));
+  if (TessBaseAPIRecognize(api, monitor) == 0) {
+   utf8 = TessBaseAPIGetUTF8Text(api);
+   NSString *alternate = utf8 ? [[NSString alloc] initWithUTF8String:utf8] : @"";
+   int alternateConfidence = TessBaseAPIMeanTextConf(api);
+   if (alternate.length && (!text.length || alternateConfidence > confidence + 5)) {
+    text = alternate;
+    confidence = alternateConfidence;
+    status = 0;
+   }
+   if (utf8) TessDeleteText(utf8);
+  }
+  TessMonitorDelete(monitor);
+ }
+ TessBaseAPIEnd(api);
+ TessBaseAPIDelete(api);
+ free(pixels);
+ return result([text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet],
+               confidence, status == 0 ? nil : @"recognition");
 }}

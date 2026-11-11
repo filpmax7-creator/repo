@@ -291,6 +291,9 @@
     self.overlay.hidden = self.fullShotBusy || !FSCanCaptureVisibleScreen() || !self.overlay.windowScene || (!self.cards.count && !self.undoButton);
 }
 - (UIImage *)captureCurrentSelection:(CGRect)selection canvas:(CGSize)canvas {
+    return [self captureCurrentSelection:selection canvas:canvas applyMarks:YES];
+}
+- (UIImage *)captureCurrentSelection:(CGRect)selection canvas:(CGSize)canvas applyMarks:(BOOL)applyMarks {
     if (!FSCanCaptureVisibleScreen() || self.selectionLocked!=FSDeviceIsLocked() || !self.selectorView || self.presentedViewController) return nil;
     if (!CGSizeEqualToSize(canvas,self.view.bounds.size)) {
         [self showMessage:FSL(@"تغيّر اتجاه الشاشة؛ أعد التحديد",@"Orientation changed; select again")]; return nil;
@@ -315,7 +318,7 @@
         [self showMessage:FSL(@"اتجاه الشاشة غير متطابق؛ جرّب الوضع العمودي",@"Screen orientation changed; try portrait")]; return nil;
     }
     UIImage *crop=FSCropImage(image,selection,canvas);
-    if (crop) crop=[self.selectorView imageByApplyingMarksToCrop:crop selection:selection];
+    if (crop && applyMarks) crop=[self.selectorView imageByApplyingMarksToCrop:crop selection:selection];
     FSLog(crop ? @"Current video frame captured at selection action" : @"Current-frame crop failed");
     if (!crop) [self showMessage:FSL(@"تعذّر قص المنطقة المحددة",@"Could not crop selected area")];
     return crop;
@@ -493,7 +496,8 @@
 - (void)selectionAction:(NSString *)action rect:(CGRect)rect canvas:(CGSize)canvas {
     if (FSDeviceIsLocked()) { [self showMessage:FSL(@"افتح القفل للحفظ والمشاركة؛ يمكنك تثبيت القص بضغطتين داخله",@"Unlock to save or share; double tap inside to pin")]; return; }
     if (self.presentedViewController || !self.selectorView) return;
-    UIImage *crop=[self captureCurrentSelection:rect canvas:canvas];
+    BOOL analyzesCrop = [@[@"text", @"qr", @"translate", @"textcopy"] containsObject:action];
+    UIImage *crop=[self captureCurrentSelection:rect canvas:canvas applyMarks:!analyzesCrop];
     if (!crop) return;
     NSInteger tool=-1;
     if ([action isEqualToString:@"rectangle"]) tool=2;
@@ -517,7 +521,7 @@
         [self saveToPhotos:crop];
     } else if ([action isEqualToString:@"save"]) {
         [self exportImage:crop];
-    } else if ([action isEqualToString:@"text"] || [action isEqualToString:@"qr"] || [action isEqualToString:@"translate"] || [action isEqualToString:@"textcopy"]) {
+    } else if (analyzesCrop) {
         [self recognizeImage:crop barcode:[action isEqualToString:@"qr"] translate:[action isEqualToString:@"translate"] copyDirectly:[action isEqualToString:@"textcopy"]];
     }
 }
