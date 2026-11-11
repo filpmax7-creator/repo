@@ -1,0 +1,118 @@
+name: Build FloatSnap with Xcode
+
+on:
+  push:
+    paths:
+      - 'FloatSnap/**'
+      - '.github/workflows/floatsnap-build.yml'
+      - '.github/scripts/check-ptrauth.sh'
+  pull_request:
+    paths:
+      - 'FloatSnap/**'
+      - '.github/workflows/floatsnap-build.yml'
+      - '.github/scripts/check-ptrauth.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: floatsnap-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      THEOS: ${{ github.workspace }}/../theos
+      SDK_VERSION: '16.5'
+      THEOS_REVISION: '6e7b8c40e0f5f9f5b2377800dc1e42cd2560d24a'
+      SDKS_REVISION: '0222fd5413cf4b9af096f37b4621afa2688572f7'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install build tools and record Xcode
+        run: |
+          brew install ldid make xz
+          mkdir -p ci-logs
+          xcode-select -p | tee ci-logs/xcode-path.txt
+          xcodebuild -version | tee ci-logs/xcode-version.txt
+          xcrun clang --version | tee ci-logs/clang-version.txt
+
+      - name: Get pinned Theos and SDK
+        run: |
+          git init "$THEOS"
+          git -C "$THEOS" remote add origin https://github.com/theos/theos.git
+          git -C "$THEOS" fetch --depth 1 origin "$THEOS_REVISION"
+          git -C "$THEOS" checkout --detach FETCH_HEAD
+          git -C "$THEOS" submodule update --init --recursive --depth 1
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/theos/sdks.git "$RUNNER_TEMP/sdks"
+          git -C "$RUNNER_TEMP/sdks" fetch --depth 1 origin "$SDKS_REVISION"
+          git -C "$RUNNER_TEMP/sdks" sparse-checkout set "iPhoneOS${SDK_VERSION}.sdk"
+          git -C "$RUNNER_TEMP/sdks" checkout --detach "$SDKS_REVISION"
+          mkdir -p "$THEOS/sdks"
+          cp -R "$RUNNER_TEMP/sdks/iPhoneOS${SDK_VERSION}.sdk" "$THEOS/sdks/"
+          test -d "$THEOS/sdks/iPhoneOS${SDK_VERSION}.sdk/System/Library/PrivateFrameworks/Preferences.framework"
+          git -C "$THEOS" rev-parse HEAD > ci-logs/theos-revision.txt
+          git -C "$RUNNER_TEMP/sdks" rev-parse HEAD > ci-logs/sdks-revision.txt
+
+      - name: Build FloatSnap with Apple toolchain
+        working-directory: FloatSnap
+        env:
+          CI_BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          for name, meta in json.loads(Path("OCR-ASSETS.json").read_text()).items():
+              asset = Path(name).read_bytes()
+              assert len(asset) == meta["bytes"] and hashlib.sha256(asset).hexdigest() == meta["sha256"], name
+          PY
+          python3 - <<'PY'
+          import os,re
+          from pathlib import Path
+          p=Path('control')
+          text=p.read_text(encoding='utf8')
+          text,count=re.subn(r'^Version: .+$', 'Version: 0.9.9.10-alpha+ci.'+os.environ['CI_BUILD_NUMBER'], text, flags=re.M)
+          assert count==1
+          p.write_text(text,encoding='utf8')
+          PY
+          # Xcode16.4 + the iOS15 deployment target did not sign class metadata
+          # by default in run 1. Enable both metadata features on arm64e only.
+          gmake package FINALPACKAGE=1 TARGET="iphone:clang:${SDK_VERSION}:16.0" arm64e_CFLAGS="-Xclang -fptrauth-objc-class-ro -Xclang -fptrauth-objc-isa-mode=sign-and-auth" 2>&1 | tee ../ci-logs/build.log
+
+      - name: Verify PAC on tweak and preferences
+        working-directory: FloatSnap
+        run: |
+          shopt -s nullglob
+          debs=(packages/*.deb)
+          test "${#debs[@]}" -eq 1
+          bash ../.github/scripts/check-ptrauth.sh "${debs[0]}" 2>&1 | tee ../ci-logs/ptrauth.log
+          # Do not accept a pass that silently skipped either required binary.
+          grep -Eq '^OK[[:space:]]+.*[/]FloatSnap\.dylib[[:space:]]' ../ci-logs/ptrauth.log
+          grep -Eq '^OK[[:space:]]+.*[/]FloatSnapPrefs\.bundle/FloatSnapPrefs[[:space:]]' ../ci-logs/ptrauth.log
+          shasum -a 256 "${debs[@]}" > packages/SHA256SUMS.txt
+
+      - name: Upload verified test package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: FloatSnap-deb-${{ github.run_number }}
+          path: |
+            FloatSnap/packages/*.deb
+            FloatSnap/packages/SHA256SUMS.txt
+            ci-logs/
+          if-no-files-found: error
+
+      - name: Upload diagnostics even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: FloatSnap-build-logs-${{ github.run_number }}
+          path: ci-logs/
+          if-no-files-found: ignore

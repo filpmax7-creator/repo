@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict><key>entry</key><dict><key>cell</key><string>PSLinkCell</string><key>icon</key><string>/var/jb/Library/PreferenceBundles/FloatSnapPrefs.bundle/SettingsIcon.png</string><key>label</key><string>FloatSnap</string><key>bundle</key><string>FloatSnapPrefs</string><key>detail</key><string>FSRootListController</string><key>isController</key><true/></dict></dict></plist>

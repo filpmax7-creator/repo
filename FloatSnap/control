@@ -1,0 +1,10 @@
+Package: local.floatsnap.tweak
+Name: FloatSnap
+Version: 0.9.9.10-alpha
+Architecture: iphoneos-arm64
+Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
+Maintainer: Filp Max <filpmax7@gmail.com>
+Author: Filp Max
+Section: Tweaks
+Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0), firmware (<< 27.0)
+Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
