@@ -1475,11 +1475,56 @@ static NSArray<UIView *> *HBCarouselSourceIcons(UIView *dock) {
 
 static UIImage *HBCarouselIconArtwork(UIView *view, NSString *bundleIdentifier);
 
+// iOS 26 can keep the native icon list inside a hidden UIKit wrapper.
+static void HBUpdateNativeDockEditingWrapper(UIView *dock, BOOL editing) {
+    static char stateKey;
+    NSMapTable<UIView *, NSArray<NSNumber *> *> *states =
+        objc_getAssociatedObject(dock, &stateKey);
+    if (!editing || !dock.window) {
+        if (!states) return;
+        objc_setAssociatedObject(dock, &stateKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        [UIView performWithoutAnimation:^{
+            for (UIView *wrapper in states.keyEnumerator) {
+                NSArray<NSNumber *> *state = [states objectForKey:wrapper];
+                if (!wrapper.hidden) wrapper.hidden = state[0].boolValue;
+                if (wrapper.alpha == 1.0) wrapper.alpha = state[1].doubleValue;
+            }
+        }];
+        return;
+    }
+
+    for (UIView *list in HBInnerDockLists(dock)) {
+        UIView *wrapper = list.superview;
+        if (wrapper.class != UIView.class || wrapper.superview != dock ||
+            list.hidden || list.alpha <= 0.01) continue;
+        CGRect inDock = [list convertRect:list.bounds toView:dock];
+        if (CGRectIsEmpty(inDock) || !CGRectIntersectsRect(inDock, dock.bounds)) continue;
+        if (!wrapper.hidden && wrapper.alpha > 0.01) continue;
+        if (!states) {
+            states = [NSMapTable weakToStrongObjectsMapTable];
+            objc_setAssociatedObject(dock, &stateKey, states, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        if (![states objectForKey:wrapper]) {
+            [states setObject:@[@(wrapper.hidden), @(wrapper.alpha)] forKey:wrapper];
+        }
+        [UIView performWithoutAnimation:^{
+            wrapper.alpha = 1.0;
+            wrapper.hidden = NO;
+        }];
+    }
+}
+
 static void HBApplyCircle(UIView*dock,CGRect content){
- if(!HBEnabled()||!HBCircularModeChosen()||HBIconManagerIsEditingOrDragging()){
+ BOOL enabled = HBEnabled();
+ BOOL circular = HBCircularModeChosen();
+ BOOL editing = HBIconManagerIsEditingOrDragging();
+ BOOL wrappedDock = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion == 26;
+ if(!enabled||!circular||editing){
  HBUpdateCircularDock(dock,nil,CGRectZero,@[],0,NO,nil,nil);
+ if(wrappedDock) HBUpdateNativeDockEditingWrapper(dock, enabled && circular && editing);
  objc_setAssociatedObject(dock,&HBCircleRowsKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);objc_setAssociatedObject(dock,&HBCircleTimeKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);return;
  }
+ if(wrappedDock) HBUpdateNativeDockEditingWrapper(dock, NO);
  UIView*surface=dock.superview;CGSize screen=dock.window.bounds.size;
  while(surface.superview&&(fabs(surface.bounds.size.width-screen.width)>1||fabs(surface.bounds.size.height-screen.height)>1))surface=surface.superview;
  NSMutableArray*rows=objc_getAssociatedObject(dock,&HBCircleRowsKey);NSMapTable*map=objc_getAssociatedObject(dock,&HBCircleMapKey);double now=NSDate.timeIntervalSinceReferenceDate;
