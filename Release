@@ -6,12 +6,12 @@ Codename: ios
 Architectures: iphoneos-arm64
 Components: main
 Description: Rootless tweaks by Filp Max
-Date: Mon, 09 Nov 2026 19:56:22 GMT
+Date: Tue, 17 Nov 2026 22:47:11 GMT
 MD5Sum:
- 1ab82febb523fadf620d9c7935fd227d      875 Packages
- 23458e62c7a61dfc37693ecb9a2a6638      543 Packages.gz
- 4512a731a4b839431570ac48964bab85      613 Packages.bz2
+ ae1417489830773111b15502dd291e35 1681 Packages
+ df9ddd76a804b6ad412b74357d6dc7ac 811 Packages.gz
+ e1f076b4caa0f98bbeac42fff612ad95 922 Packages.bz2
 SHA256:
- 27be52d1c8b5d1e66d4a775a28d4cf559759325a945766144fcee023ac3c7333      875 Packages
- 37b2d9911ac4d8024d1a554195e227d196fb85b09cefcfb593d8bf058c010995      543 Packages.gz
- e3074d08d5f6bdf1d051e44e2a5943fb1c3cae50cd90b6497ff1efd171afa864      613 Packages.bz2
+ fa9dd00cf99f98a7d27f96fed4a76d46ea372ed7177ff0d8107b031c1552dbca 1681 Packages
+ 8bb4fe235bc336b4ab6443c63a7d7a25da400d3bd8e1a93aed17adb334f69c3b 811 Packages.gz
+ 598acbe913bc6372c9b41f041e8f9153c4ae9e34f264d6287ce2075481c9b68d 922 Packages.bz2

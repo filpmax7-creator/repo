@@ -16,3 +16,22 @@ SHA256: b7283f20e2e209ce26378701cbec99b77cab6452434caf5b46018ee08d37bc54
 Icon: https://filpmax7-creator.github.io/repo/icons/MaxDock.png
 Depiction: https://filpmax7-creator.github.io/repo/
 SileoDepiction: https://filpmax7-creator.github.io/repo/sileo.json
+
+Package: local.floatsnap.tweak
+Name: FloatSnap
+Description: Floating screen crops; iOS 16 tested, iOS 17/18/26 experimental rootless compatibility.
+Maintainer: Filp Max <filpmax7@gmail.com>
+Author: Filp Max
+Section: Tweaks
+Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0), firmware (<< 27.0)
+Icon: https://filpmax7-creator.github.io/repo/icons/FloatSnap.png
+Architecture: iphoneos-arm64
+Version: 0.9.9.12-alpha+ci.6
+Installed-Size: 22904
+Filename: ./debs/FloatSnap-0.9.9.12.deb
+Size: 14713508
+Depiction: https://filpmax7-creator.github.io/repo/floatsnap.html
+SileoDepiction: https://filpmax7-creator.github.io/repo/floatsnap.json
+MD5sum: 064b3d6d6404fedd9a46e06af9c4d31a
+SHA1: a6243396325d88ae1aa1ae6b228beb363d8e6022
+SHA256: a245692e5548d20ed7061ec0f3822886b4518d44dce3e45544fc23d1bb2b69ec
