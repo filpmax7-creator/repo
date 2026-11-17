@@ -18,7 +18,7 @@ jobs:
           def download(url,path):
               p=pathlib.Path(path);p.parent.mkdir(parents=True,exist_ok=True)
               with urllib.request.urlopen(url) as r:p.write_bytes(r.read())
-          download("https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-ae34-820a-8688-ac881d67aedd/raw?se=2026-11-17T22%3A45%3A40Z&sp=r&sv=2026-06-06&sr=b&scid=d2ac3298-8c03-4885-9843-cb285ee7a1a8&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T02%3A22%3A17Z&ske=2026-11-18T02%3A22%3A17Z&sks=b&skv=2026-06-06&sig=V2xE4RaQz64s6YsnY1l83lMRhIPDNbzy3wOdUApWzDQ%3D",'incoming')
+          download("https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-10dc-820a-92ac-3effdced687b/raw?se=2026-11-17T22%3A51%3A51Z&sp=r&sv=2026-06-06&sr=b&scid=28f2684d-3a80-4988-a243-f85dbcfb0db0&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T03%3A53%3A49Z&ske=2026-11-18T03%3A53%3A49Z&sks=b&skv=2026-06-06&sig=UO7qE7pWwSx4sYSg/spaIhwqBDyYTd662Y8kkdCnG/w%3D",'incoming')
           deb='debs/FloatSnap-0.9.9.12.deb'
           pathlib.Path('debs').mkdir(exist_ok=True)
           data=pathlib.Path('incoming').read_bytes()
@@ -29,8 +29,8 @@ jobs:
                   assert len(names)==1
                   pathlib.Path(deb).write_bytes(z.read(names[0]))
           pathlib.Path('incoming').unlink()
-          download("https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-978c-8210-90a7-0e780a5725ff/raw?se=2026-11-17T23%3A40%3A40Z&sp=r&sv=2026-06-06&sr=b&scid=d2ac3298-8c03-4885-9843-cb285ee7a1a8&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T05%3A18%3A56Z&ske=2026-11-18T05%3A18%3A56Z&sks=b&skv=2026-06-06&sig=ahe5Qi/wYIL%2BLxvOCWPhrvfoin84mYxYucsdAEkUUQc%3D",'icons/FloatSnap.png')
-          download("https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-1180-8210-98aa-13cb1b39080f/raw?se=2026-11-17T23%3A40%3A40Z&sp=r&sv=2026-06-06&sr=b&scid=d2ac3298-8c03-4885-9843-cb285ee7a1a8&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T03%3A55%3A17Z&ske=2026-11-18T03%3A55%3A17Z&sks=b&skv=2026-06-06&sig=8q2wnISz3Yiq8ubbRv8nFCj8HTlCcxQvga3Qi%2BacqMw%3D",'screenshots/FloatSnap-gallery.png')
+          download("https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-978c-8210-90a7-0e780a5725ff/raw?se=2026-11-17T23%3A46%3A52Z&sp=r&sv=2026-06-06&sr=b&scid=28f2684d-3a80-4988-a243-f85dbcfb0db0&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T06%3A26%3A25Z&ske=2026-11-18T06%3A26%3A25Z&sks=b&skv=2026-06-06&sig=XJvoMcFQXVvMirAWDPMgiSas18HU7YPyX%2BTwFhCTs/o%3D",'icons/FloatSnap.png')
+          download("https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-1180-8210-98aa-13cb1b39080f/raw?se=2026-11-17T23%3A46%3A52Z&sp=r&sv=2026-06-06&sr=b&scid=28f2684d-3a80-4988-a243-f85dbcfb0db0&skoid=b971d227-1348-4524-8797-edb0fdf15147&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-11-17T03%3A47%3A30Z&ske=2026-11-18T03%3A47%3A30Z&sks=b&skv=2026-06-06&sig=TJhpd/RoeJVvb58bB5U09DrbGz2wUicegYcxD36rs0M%3D",'screenshots/FloatSnap-gallery.png')
           im=Image.open('icons/FloatSnap.png');im.thumbnail((256,256));im.save('icons/FloatSnap.png')
           base='https://filpmax7-creator.github.io/repo/'
           description='FloatSnap lets you crop a screen region, resize and move it, annotate with pen, arrows, lines and rectangles, hide details with mosaic, lock or pin crops, copy images, extract Arabic and English text, read QR codes, translate online, save to Photos, share and rearrange toolbar controls. OCR accuracy varies by image. Tested on iPhone X, iOS 16.7.x, Dopamine Rootless. iOS 17, 18 and 26 compatibility is experimental. Gallery shows conceptual device frames with AI-rendered screenshot artwork.'
